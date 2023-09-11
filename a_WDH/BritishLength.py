@@ -1,4 +1,8 @@
-class britishlength:
+class BritishLength:
+    pass
+
+
+class BritishLength:
     """
 >>> a=britishlength(pounds=2)
 >>> a
@@ -18,23 +22,23 @@ Britishlength(1, 1)
 """
 
     @property
-    def pounds(self):
+    def pounds(self) -> int:
         return ((self._pounds % 14) + 14) % 14
 
     @property
-    def stones(self):
+    def stones(self) -> int:
         return self._pounds // 14
 
     def __init__(self, stone=0, pounds=0):
         self._pounds = stone * 14 + pounds
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f'Britishlength({self.stones}, {self.pounds})'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.stones} st {self.pounds} lb'
 
-    def __add__(self, other):
-        if isinstance(other, britishlength):
-            return britishlength(pounds=self._pounds + other._pounds)
+    def __add__(self, other) -> BritishLength:
+        if isinstance(other, BritishLength):
+            return BritishLength(pounds=self._pounds + other._pounds)
         return NotImplemented
