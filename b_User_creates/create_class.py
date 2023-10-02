@@ -1,4 +1,6 @@
 import logging
+import math
+import random
 import sys
 import os
 from openpyxl import load_workbook
@@ -27,11 +29,16 @@ def getSafeFilePaths(outputDir):
 
 
 def addCreateCommand(createFile, x):
-    createFile.write(x)
+    createFile.write(f'useradd -d "/home/klassen/k{str(x[0]).lower()}" -c "{x[0]} - {x[2]}" -m -g "klasse" -G cdrom,plugdev,sambashare -s /bin/bash k{str(x[0]).lower()}\n')
+    createFile.write(f'echo "k{str(x[0]).lower()}:{str(x[0]).lower()}{get_password_random_char()}{x[1]}{get_password_random_char()}{x[2].lower()}{get_password_random_char()}" | chpasswd\n')
     pass
 
+
+def get_password_random_char():
+    passwdRndChar = "!%&(),._-=^#5"
+    return passwdRndChar[math.floor(random.random() * len(passwdRndChar))]
 def addDeleteCommand(deleteFile, x):
-    deleteFile.write(x)
+    # deleteFile.write(x)
     pass
 
 
@@ -41,7 +48,7 @@ def createClasses(path, outputDir):
     ws = wb[wb.sheetnames[0]]
     createPath,deletePath,listingPath,logPath = getSafeFilePaths(outputDir)
     with open(createPath,"w") as createFile, open(deletePath,"w") as deleteFile:
-        for row in ws.iter_rows():
+        for row in ws.iter_rows(min_row=2):
             x = row[0].value,row[1].value,row[2].value
             print(x)
             addCreateCommand(createFile, x)
@@ -69,11 +76,7 @@ def createClasses(path, outputDir):
 # z.B. /home/klassen/k1ai
 # ∗ diese Ordner existieren eventuell nicht
 # – Die Linux-User müssen in folgenden existierenden System-Gruppen sein: cdrom,plugdev,sambashare
-# – Das Passwort besteht aus KZRZJZ4
-# ∗ K(lasse)
-# ∗ Z(ufall): ein zufälliges Zeichen aus !%&(),._-=^#5
-# ∗ R(aum), ohne dem B für Beamer
-# ∗ J(ahrgangsvorstand)
+
 # – Wichtig: eventuell braucht man im Script ein Escape (“\”) beim Passwort, aber nicht im Textfile!
 # – Man sollte auch
 # ∗ den Benutzername (“Gecos”)
