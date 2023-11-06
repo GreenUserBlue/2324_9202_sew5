@@ -3,6 +3,8 @@ import math
 import random
 import sys
 import os
+import argparse
+from logging.handlers import RotatingFileHandler
 
 import unicodedata
 from openpyxl import load_workbook
@@ -10,10 +12,42 @@ from openpyxl import load_workbook
 __author__ = "Zwickelstorfer Felix"
 
 
-# def start_program():
-#     """runs the logic for the program"""
-#     args = sys.argv
-#     print(args)
+def setUpLogger():
+    global logger
+    logger = logging.getLogger('my_logger')
+    logger.setLevel(logging.INFO)
+    file_handler = RotatingFileHandler('classes_logfile.log', maxBytes=10000, backupCount=5)
+    file_handler.setFormatter(logging.Formatter('[%(asctime)s] %(levelname)s %(message)s'))
+    stream_handler = logging.StreamHandler()
+    stream_formatter = logging.Formatter('%(levelname)s - %(message)s')
+    stream_handler.setFormatter(stream_formatter)
+    logger.addHandler(file_handler)
+    logger.addHandler(stream_handler)
+    logger.info("Logging turned on " + str(logger.level))
+
+
+def start_program():
+    """runs the logic for the program"""
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-q", "--quiet", help='Only Log Errors', required=False, action='store_true')
+    parser.add_argument("-v", "--verbose", help='Log Verbose Debug', required=False, action='store_true')
+
+    args = parser.parse_args()
+    global logger
+    if "logger" not in globals():
+        setUpLogger()
+    if args.verbose:
+        logger.setLevel(logging.DEBUG)
+    elif args.quiet:
+        logger.setLevel(logging.ERROR)
+    else:
+        logger.setLevel(logging.INFO)
+
+    createClasses("./res/Klassenraeume_2023.xlsx", "./outClasses")
+
+
 #  # TODO change
 #     logging.basicConfig(level=getattr(logging, args), format='[%(asctime)s] %(levelname)s %(message)s',
 #                             datefmt='%Y-%m-%d %H:%M:%S')
@@ -54,7 +88,8 @@ def getUserNameSpecialChars(username):
 def addCreateCommand(createFile, x, addedUsers):
     uName = getUserNameSpecialChars(x[0])
     if uName in addedUsers:
-        raise Exception(f"User ${uName} already exists!")
+        logger.critical(f"User ${uName} already exists!")
+        sys.exit(1)
     addedUsers.append(uName)
     createFile.write(
         f'useradd -d "/home/klassen/{uName}" -c "{x[0]} - {x[2]}" -m -g "klasse" -G cdrom,plugdev,sambashare -s /bin/bash {uName}\n')
@@ -76,8 +111,10 @@ def addCommands(createFile, deleteFile, x, addedUsers):
     addCreateCommand(createFile, x, addedUsers)
     addDeleteCommand(deleteFile, x)
 
+    logger.debug(f"Added class-user {x[0]} sucessfully")
 
-def createClasses(path, outputDir):
+
+def createClasses(path: str, outputDir: str) -> None:
     """
     creates files to create and delete classes
     :param path: the path to the xlsx file
@@ -86,29 +123,36 @@ def createClasses(path, outputDir):
     >>> createClasses("./res/Klassenraeume_2023_With_Double.xlsx", "./outClasses")
     Traceback (most recent call last):
         ...
-    Exception: User $k5cn already exists!
+    SystemExit: 1
     >>> createClasses("./res/Klassenraeume_2023_NOT_EXISTING.xlsx", "./outClasses")
-    Traceback (most recent call last):
-        ...
-    FileNotFoundError: [Errno 2] No such file or directory: './res/Klassenraeume_2023_NOT_EXISTING.xlsx'
     """
-    os.makedirs(outputDir, exist_ok=True)
-    wb = load_workbook(path, read_only=True)
-    ws = wb[wb.sheetnames[0]]
-    createPath, deletePath, listingPath, logPath = getSafeFilePaths(outputDir)
-    with open(createPath, "w") as createFile, open(deletePath, "w") as deleteFile:
-        createFile.write("#! /bin/sh\ngroupadd klasse\n")
-        deleteFile.write("#! /bin/sh\n")
+    global logger
+    if "logger" not in globals():
+        setUpLogger()
+    try:
+        os.makedirs(outputDir, exist_ok=True)
+        wb = load_workbook(path, read_only=True)
+        ws = wb[wb.sheetnames[0]]
+        createPath, deletePath, listingPath, logPath = getSafeFilePaths(outputDir)
+        with open(createPath, "w") as createFile, open(deletePath, "w") as deleteFile:
+            createFile.write("#! /bin/sh\ngroupadd klasse\n")
+            deleteFile.write("#! /bin/sh\n")
 
-        addedUsers = []
-        for row in ws.iter_rows(min_row=2):
-            x = row[0].value, row[1].value, row[2].value
-            if x[0] is None:
-                break
-            addCommands(createFile, deleteFile, x, addedUsers)
+            addedUsers = []
+            for row in ws.iter_rows(min_row=2):
+                x = row[0].value, row[1].value, row[2].value
+                if x[0] is None:
+                    break
+                addCommands(createFile, deleteFile, x, addedUsers)
 
-        addCommands(createFile, deleteFile, ("lehrer", "0", "JUE"), addedUsers)  # Jüngling
-        addCommands(createFile, deleteFile, ("seminar", "0", "JUE"), addedUsers)  # Jüngling
+            addCommands(createFile, deleteFile, ("lehrer", "0", "JUE"), addedUsers)  # Jüngling
+            addCommands(createFile, deleteFile, ("seminar", "0", "JUE"), addedUsers)  # Jüngling
+
+        logger.info("Added classes successfully.")
+    except FileNotFoundError:
+        logger.critical(f"Couldn't find file {path}")
+    except Exception:
+        logger.critical(f"Couldn't access file {path}")
 
 
 # - ein Bash-Script2 mit allen notwendigen Schritten/Befehlen zum Erzeugen der Benutzer3
@@ -143,5 +187,5 @@ def createClasses(path, outputDir):
 
 
 if __name__ == "__main__":
-    # start_program()
-    createClasses("./res/Klassenraeume_2023.xlsx", "./outClasses")
+    start_program()
+    # createClasses("./res/Klassenraeume_2023.xlsx", "./outClasses")
