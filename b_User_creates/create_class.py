@@ -12,7 +12,8 @@ from openpyxl import load_workbook
 __author__ = "Zwickelstorfer Felix"
 
 
-def setUpLogger():
+def setUpLogger() -> None:
+    """ creates the logger """
     global logger
     logger = logging.getLogger('my_logger')
     logger.setLevel(logging.INFO)
@@ -26,7 +27,7 @@ def setUpLogger():
     logger.info("Logging turned on " + str(logger.level))
 
 
-def start_program():
+def start_program() -> None:
     """runs the logic for the program"""
 
     parser = argparse.ArgumentParser()
@@ -60,11 +61,12 @@ def start_program():
 #             logging.log(logging.INFO, "Trying to generate keys with " + str(args.keygen) + " bit")
 
 
-def getSafeFilePaths(outputDir):
+def getSafeFilePaths(outputDir: str) -> tuple[str, str, str]:
+    """returns the names for the files to safe"""
     return f"{outputDir}/creates.sh", f"{outputDir}/deletes.sh", f"{outputDir}/list.csv", f"{outputDir}/logfile.log"
 
 
-def getUserNameSpecialChars(username):
+def getUserNameSpecialChars(username: str) -> str:
     """
     deletes/replaces all special chars and removes them if necessary
     :param username: the original name
@@ -85,7 +87,8 @@ def getUserNameSpecialChars(username):
     return unicodedata.normalize('NFC', shaved)
 
 
-def addCreateCommand(createFile, x, addedUsers):
+def addCreateCommand(createFile, x: tuple[str, str, str], addedUsers: list[str]) -> None:
+    """add the command line to create a class user"""
     uName = getUserNameSpecialChars(x[0])
     if uName in addedUsers:
         logger.critical(f"User ${uName} already exists!")
@@ -97,20 +100,22 @@ def addCreateCommand(createFile, x, addedUsers):
         f'echo "{uName}:{str(x[0]).lower()}{get_password_random_char()}{x[1]}{get_password_random_char()}{x[2].lower()}{get_password_random_char()}" | chpasswd\n')
 
 
-def get_password_random_char():
+def get_password_random_char() -> None:
+    """returns a random char for the password"""
     passwdRndChar = "!%&(),._-=^#5"
     return passwdRndChar[math.floor(random.random() * len(passwdRndChar))]
 
 
-def addDeleteCommand(deleteFile, x):
+def addDeleteCommand(deleteFile, x: tuple[str, str, str]) -> None:
+    """add the command line to delete a class user"""
     uName = getUserNameSpecialChars(x[0])
     deleteFile.write("userdel -r " + str(uName) + "\n")
 
 
-def addCommands(createFile, deleteFile, x, addedUsers):
+def addCommands(createFile, deleteFile, x: tuple[str, str, str], addedUsers: list[str]):
+    """calls the commands to add the user"""
     addCreateCommand(createFile, x, addedUsers)
     addDeleteCommand(deleteFile, x)
-
     logger.debug(f"Added class-user {x[0]} sucessfully")
 
 
@@ -188,4 +193,3 @@ def createClasses(path: str, outputDir: str) -> None:
 
 if __name__ == "__main__":
     start_program()
-    # createClasses("./res/Klassenraeume_2023.xlsx", "./outClasses")
