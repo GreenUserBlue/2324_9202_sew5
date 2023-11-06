@@ -62,9 +62,9 @@ def start_program() -> None:
 #             logging.log(logging.INFO, "Trying to generate keys with " + str(args.keygen) + " bit")
 
 
-def getSafeFilePaths(outputDir: str) -> tuple[str, str, str]:
+def getSafeFilePaths(outputDir: str) -> tuple[str, str, str, str]:
     """returns the names for the files to safe"""
-    return f"{outputDir}/creates.sh", f"{outputDir}/deletes.sh", f"{outputDir}/list.csv", f"{outputDir}/logfile.log"
+    return f"{outputDir}/creates.sh", f"{outputDir}/deletes.sh", f"{outputDir}/list.txt", f"{outputDir}/logfile.log"
 
 
 def getUserNameSpecialChars(username: str) -> str:
@@ -101,7 +101,7 @@ def getUserNameSpecialChars(username: str) -> str:
     return uName
 
 
-def addCreateCommand(createFile, x: tuple[str, str, str], addedUsers: list[str]) -> None:
+def addCreateCommand(createFile, x: tuple[str, str, str], addedUsers: list[str], listingFile) -> None:
     """add the command line to create a class user"""
     uName = getUserNameSpecialChars(x[0])
     if uName in addedUsers:
@@ -110,8 +110,10 @@ def addCreateCommand(createFile, x: tuple[str, str, str], addedUsers: list[str])
     addedUsers.append(uName)
     createFile.write(
         f'useradd -d "/home/klassen/{uName}" -c "{x[0]} - {x[2]}" -m -g "klasse" -G cdrom,plugdev,sambashare -s /bin/bash {uName}\n')
+    passwd = f"{str(x[0]).lower()}{get_password_random_char()}{x[1]}{get_password_random_char()}{x[2].lower()}{get_password_random_char()}"
     createFile.write(
-        f'echo "{uName}:{str(x[0]).lower()}{get_password_random_char()}{x[1]}{get_password_random_char()}{x[2].lower()}{get_password_random_char()}" | chpasswd\n')
+        f'echo "{uName}:{passwd}" | chpasswd\n')
+    listingFile.write(f'"{uName}";"{passwd}"\n')
 
 
 def get_password_random_char() -> None:
@@ -126,9 +128,9 @@ def addDeleteCommand(deleteFile, x: tuple[str, str, str]) -> None:
     deleteFile.write("userdel -r " + str(uName) + "\n")
 
 
-def addCommands(createFile, deleteFile, x: tuple[str, str, str], addedUsers: list[str]):
+def addCommands(createFile, deleteFile, listingFile, x: tuple[str, str, str], addedUsers: list[str]):
     """calls the commands to add the user"""
-    addCreateCommand(createFile, x, addedUsers)
+    addCreateCommand(createFile, x, addedUsers, listingFile)
     addDeleteCommand(deleteFile, x)
     logger.debug(f"Added class-user {x[0]} sucessfully")
 
@@ -153,19 +155,21 @@ def createClasses(path: str, outputDir: str) -> None:
         wb = load_workbook(path, read_only=True)
         ws = wb[wb.sheetnames[0]]
         createPath, deletePath, listingPath, logPath = getSafeFilePaths(outputDir)
-        with open(createPath, "w") as createFile, open(deletePath, "w") as deleteFile:
+        with open(createPath, "w") as createFile, open(deletePath, "w") as deleteFile, open(listingPath,
+                                                                                            "w") as listingFile:
             createFile.write("#! /bin/sh\ngroupadd klasse\n")
             deleteFile.write("#! /bin/sh\n")
+            listingFile.write("Username;Password\n")
 
             addedUsers = []
             for row in ws.iter_rows(min_row=2):
                 x = row[0].value, row[1].value, row[2].value
                 if x[0] is None:
                     break
-                addCommands(createFile, deleteFile, x, addedUsers)
+                addCommands(createFile, deleteFile, listingFile, x, addedUsers)
 
-            addCommands(createFile, deleteFile, ("lehrer", "0", "JUE"), addedUsers)  # Jüngling
-            addCommands(createFile, deleteFile, ("seminar", "0", "JUE"), addedUsers)  # Jüngling
+            addCommands(createFile, deleteFile, listingFile,("lehrer", "0", "JUE"), addedUsers)  # Jüngling
+            addCommands(createFile, deleteFile, listingFile,("seminar", "0", "JUE"), addedUsers)  # Jüngling
 
         logger.info("Added classes successfully.")
     except FileNotFoundError:
