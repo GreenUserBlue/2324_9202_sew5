@@ -3,6 +3,8 @@ import math
 import random
 import sys
 import os
+
+import unicodedata
 from openpyxl import load_workbook
 
 __author__ = "Zwickelstorfer Felix"
@@ -29,10 +31,24 @@ def getSafeFilePaths(outputDir):
 
 
 def getUserNameSpecialChars(username):
+    """
+    deletes/replaces all special chars and removes them if necessary
+    :param username: the original name
+    >>> print(getUserNameSpecialChars("1Hallo"))
+    k1hallo
+    >>> print(getUserNameSpecialChars("Hällo"))
+    hallo
+    >>> print(getUserNameSpecialChars("Hàllo"))
+    hallo
+    >>> print(getUserNameSpecialChars("Hàllo"))
+    hallo
+    """
     uName = str(username).lower()
     if uName[0].isnumeric():
         uName = f"k{uName}"
-    return uName
+    norm_txt = unicodedata.normalize('NFD', uName)
+    shaved = ''.join(c for c in norm_txt if not unicodedata.combining(c))
+    return unicodedata.normalize('NFC', shaved)
 
 
 def addCreateCommand(createFile, x, addedUsers):
@@ -53,8 +69,7 @@ def get_password_random_char():
 
 def addDeleteCommand(deleteFile, x):
     uName = getUserNameSpecialChars(x[0])
-    deleteFile.write("userdel -r "+str(uName)+"\n")
-    pass
+    deleteFile.write("userdel -r " + str(uName) + "\n")
 
 
 def addCommands(createFile, deleteFile, x, addedUsers):
@@ -63,6 +78,20 @@ def addCommands(createFile, deleteFile, x, addedUsers):
 
 
 def createClasses(path, outputDir):
+    """
+    creates files to create and delete classes
+    :param path: the path to the xlsx file
+    :param outputDir:  the directory to put the files into
+    >>> createClasses("./res/Klassenraeume_2023.xlsx", "./outClasses")
+    >>> createClasses("./res/Klassenraeume_2023_With_Double.xlsx", "./outClasses")
+    Traceback (most recent call last):
+        ...
+    Exception: User $k5cn already exists!
+    >>> createClasses("./res/Klassenraeume_2023_NOT_EXISTING.xlsx", "./outClasses")
+    Traceback (most recent call last):
+        ...
+    FileNotFoundError: [Errno 2] No such file or directory: './res/Klassenraeume_2023_NOT_EXISTING.xlsx'
+    """
     os.makedirs(outputDir, exist_ok=True)
     wb = load_workbook(path, read_only=True)
     ws = wb[wb.sheetnames[0]]
