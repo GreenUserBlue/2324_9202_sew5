@@ -1,6 +1,7 @@
 import logging
 import math
 import random
+import re
 import sys
 import os
 import argparse
@@ -73,18 +74,31 @@ def getUserNameSpecialChars(username: str) -> str:
     >>> print(getUserNameSpecialChars("1Hallo"))
     k1hallo
     >>> print(getUserNameSpecialChars("Hällo"))
-    hallo
+    haello
     >>> print(getUserNameSpecialChars("Hàllo"))
     hallo
     >>> print(getUserNameSpecialChars("Hàllo"))
     hallo
+    >>> print(getUserNameSpecialChars("Hàlloßen"))
+    hallossen
+    >>> print(getUserNameSpecialChars("Hàllo Welt"))
+    hallo_welt
+    >>> print(getUserNameSpecialChars("Hàllo Weltپ!پ"))
+    hallo_welt
     """
     uName = str(username).lower()
     if uName[0].isnumeric():
         uName = f"k{uName}"
+    uName = uName.replace("ä", "ae")
+    uName = uName.replace("ö", "oe")
+    uName = uName.replace("ü", "ue")
+    uName = uName.replace("ß", "ss")
     norm_txt = unicodedata.normalize('NFD', uName)
     shaved = ''.join(c for c in norm_txt if not unicodedata.combining(c))
-    return unicodedata.normalize('NFC', shaved)
+    uName = unicodedata.normalize('NFC', shaved)
+    uName = re.sub("[^0-9a-z ]", "", uName)
+    uName = uName.replace(" ", "_")
+    return uName
 
 
 def addCreateCommand(createFile, x: tuple[str, str, str], addedUsers: list[str]) -> None:
