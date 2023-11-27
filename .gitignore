@@ -4,3 +4,4 @@
 /b_User_creates/outUser/
 *.xml
 /__pycache__/
+/out/
