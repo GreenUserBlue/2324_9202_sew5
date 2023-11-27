@@ -1,4 +1,6 @@
 /venv/
 /.idea/
 /b_User_creates/outClasses/
+/b_User_creates/outUser/
 *.xml
+/__pycache__/

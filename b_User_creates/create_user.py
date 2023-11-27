@@ -39,7 +39,7 @@ def start_program() -> None:
     args = parser.parse_args()
     global logger
     if "logger" not in globals():
-        setUpLogger("./outClasses")
+        setUpLogger("./outUser")
     if args.verbose:
         logger.setLevel(logging.DEBUG)
     elif args.quiet:
@@ -47,7 +47,7 @@ def start_program() -> None:
     else:
         logger.setLevel(logging.INFO)
 
-    createClasses("./res/Klassenraeume_2023.xlsx", "./outClasses")
+    createClasses("./res/Klassenraeume_2023.xlsx", "./outUser")
 
 
 def getSafeFilePaths(outputDir: str) -> tuple[str, str, str, str]:
@@ -128,12 +128,12 @@ def createClasses(path: str, outputDir: str) -> None:
     creates files to create and delete classes
     :param path: the path to the xlsx file
     :param outputDir:  the directory to put the files into
-    >>> createClasses("./res/Klassenraeume_2023.xlsx", "./outClasses")
-    >>> createClasses("./res/Klassenraeume_2023_With_Double.xlsx", "./outClasses")
+    >>> createClasses("./res/Klassenraeume_2023.xlsx", "./outUser")
+    >>> createClasses("./res/Klassenraeume_2023_With_Double.xlsx", "./outUser")
     Traceback (most recent call last):
         ...
     SystemExit: 1
-    >>> createClasses("./res/Klassenraeume_2023_NOT_EXISTING.xlsx", "./outClasses")
+    >>> createClasses("./res/Klassenraeume_2023_NOT_EXISTING.xlsx", "./outUser")
     """
     global logger
     if "logger" not in globals():
