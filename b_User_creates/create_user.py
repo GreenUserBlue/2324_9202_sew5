@@ -2,7 +2,6 @@ import logging
 import math
 import random
 import re
-import sys
 import os
 import argparse
 from logging.handlers import RotatingFileHandler
@@ -13,11 +12,13 @@ from openpyxl import load_workbook
 __author__ = "Zwickelstorfer Felix"
 
 
-def setUpLogger(path:str) -> None:
+def setUpLogger(path: str) -> None:
     """ creates the logger """
     global logger
     logger = logging.getLogger('my_logger')
     logger.setLevel(logging.INFO)
+
+    os.makedirs(path, exist_ok=True)
     file_handler = RotatingFileHandler(getSafeFilePaths(path)[3], maxBytes=10000, backupCount=5)
     file_handler.setFormatter(logging.Formatter('[%(asctime)s] %(levelname)s %(message)s'))
     stream_handler = logging.StreamHandler()
@@ -47,12 +48,12 @@ def start_program() -> None:
     else:
         logger.setLevel(logging.INFO)
 
-    createClasses("./res/Klassenraeume_2023.xlsx", "./outUser")
+    create_user("res/Namen.xlsx", "./outUser")
 
 
 def getSafeFilePaths(outputDir: str) -> tuple[str, str, str, str]:
     """returns the names for the files to safe"""
-    return f"{outputDir}/creates.sh", f"{outputDir}/deletes.sh", f"{outputDir}/list.txt", f"{outputDir}/logfile.log"
+    return f"{outputDir}/creates.sh", f"{outputDir}/deletes.sh", f"{outputDir}/list.csv", f"{outputDir}/logfile.log"
 
 
 def getUserNameSpecialChars(username: str) -> str:
@@ -89,19 +90,22 @@ def getUserNameSpecialChars(username: str) -> str:
     return uName
 
 
-def addCreateCommand(createFile, x: tuple[str, str, str], addedUsers: list[str], listingFile) -> None:
+def addCreateCommand(createFile, x: tuple[str, str, str, str], addedUsers: list[str], listingFile) -> str:
     """add the command line to create a class user"""
-    uName = getUserNameSpecialChars(x[0])
-    if uName in addedUsers:
-        logger.critical(f"User ${uName} already exists!")
-        sys.exit(1)
+    uName = getUserNameSpecialChars(x[1])
+    startUName = uName
+    counter = 1
+    while uName in addedUsers:
+        uName = startUName + str(counter)
+        counter += 1
+    uName = getUserNameSpecialChars(uName)
     addedUsers.append(uName)
     createFile.write(
-        f'useradd -d "/home/klassen/{uName}" -c "{x[0]} - {x[2]}" -m -g "klasse" -G cdrom,plugdev,sambashare -s /bin/bash {uName}\n')
+        f'useradd -d "/home/klassen/{uName}" -c "{x[0]} - {x[1]}" -m -g "{x[2]}" -G cdrom,plugdev,sambashare -s /bin/bash {uName}\n')
     passwd = f"{str(x[0]).lower()}{get_password_random_char()}{x[1]}{get_password_random_char()}{x[2].lower()}{get_password_random_char()}"
-    createFile.write(
-        f'echo "{uName}:{passwd}" | chpasswd\n')
+    createFile.write(f'echo "{uName}:{passwd}" | chpasswd\n')
     listingFile.write(f'"{uName}";"{passwd}"\n')
+    return uName
 
 
 def get_password_random_char() -> None:
@@ -110,30 +114,24 @@ def get_password_random_char() -> None:
     return passwdRndChar[math.floor(random.random() * len(passwdRndChar))]
 
 
-def addDeleteCommand(deleteFile, x: tuple[str, str, str]) -> None:
+def addDeleteCommand(deleteFile, uName: str) -> None:
     """add the command line to delete a class user"""
-    uName = getUserNameSpecialChars(x[0])
     deleteFile.write("userdel -r " + str(uName) + "\n")
 
 
-def addCommands(createFile, deleteFile, listingFile, x: tuple[str, str, str], addedUsers: list[str]):
+def addCommands(createFile, deleteFile, listingFile, x: tuple[str, str, str, str], addedUsers: list[str]):
     """calls the commands to add the user"""
-    addCreateCommand(createFile, x, addedUsers, listingFile)
-    addDeleteCommand(deleteFile, x)
+    uName = addCreateCommand(createFile, x, addedUsers, listingFile)
+    addDeleteCommand(deleteFile, uName)
     logger.debug(f"Added class-user {x[0]} sucessfully")
 
 
-def createClasses(path: str, outputDir: str) -> None:
+def create_user(path: str, outputDir: str) -> None:
     """
     creates files to create and delete classes
     :param path: the path to the xlsx file
     :param outputDir:  the directory to put the files into
-    >>> createClasses("./res/Klassenraeume_2023.xlsx", "./outUser")
-    >>> createClasses("./res/Klassenraeume_2023_With_Double.xlsx", "./outUser")
-    Traceback (most recent call last):
-        ...
-    SystemExit: 1
-    >>> createClasses("./res/Klassenraeume_2023_NOT_EXISTING.xlsx", "./outUser")
+    >>> create_user("./res/Namen.xlsx", "./outUser")
     """
     global logger
     if "logger" not in globals():
@@ -143,21 +141,18 @@ def createClasses(path: str, outputDir: str) -> None:
         wb = load_workbook(path, read_only=True)
         ws = wb[wb.sheetnames[0]]
         createPath, deletePath, listingPath, logPath = getSafeFilePaths(outputDir)
-        with open(createPath, "w") as createFile, open(deletePath, "w") as deleteFile, open(listingPath,
-                                                                                            "w") as listingFile:
-            createFile.write("#! /bin/sh\ngroupadd klasse\n")
+        with open(createPath, "w") as createFile, open(deletePath, "w") as deleteFile, open(listingPath, "w") as listingFile:
+            createFile.write("#! /bin/sh\ngroupadd student\n")
+            createFile.write("groupadd teacher\n")
             deleteFile.write("#! /bin/sh\n")
             listingFile.write("Username;Password\n")
 
             addedUsers = []
             for row in ws.iter_rows(min_row=2):
-                x = row[0].value, row[1].value, row[2].value
+                x = row[0].value, row[1].value, row[2].value, row[3].value
                 if x[0] is None:
                     break
                 addCommands(createFile, deleteFile, listingFile, x, addedUsers)
-
-            addCommands(createFile, deleteFile, listingFile,("lehrer", "0", "JUE"), addedUsers)  # Jüngling
-            addCommands(createFile, deleteFile, listingFile,("seminar", "0", "JUE"), addedUsers)  # Jüngling
 
         logger.info("Added classes successfully.")
     except FileNotFoundError:
