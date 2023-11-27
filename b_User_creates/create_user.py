@@ -1,3 +1,4 @@
+import csv
 import logging
 import math
 import random
@@ -10,6 +11,8 @@ import unicodedata
 from openpyxl import load_workbook
 
 __author__ = "Zwickelstorfer Felix"
+
+from openpyxl.workbook import Workbook
 
 
 def setUpLogger(path: str) -> None:
@@ -48,7 +51,7 @@ def start_program() -> None:
     else:
         logger.setLevel(logging.INFO)
 
-    create_user("res/Namen.xlsx", "./outUser")
+    create_user("./res/Namen.xlsx", "./outUser")
 
 
 def getSafeFilePaths(outputDir: str) -> tuple[str, str, str, str]:
@@ -104,7 +107,7 @@ def addCreateCommand(createFile, x: tuple[str, str, str, str], addedUsers: list[
         f'useradd -d "/home/klassen/{uName}" -c "{x[0]} - {x[1]}" -m -g "{x[2]}" -G cdrom,plugdev,sambashare -s /bin/bash {uName}\n')
     passwd = f"{str(x[0]).lower()}{get_password_random_char()}{x[1]}{get_password_random_char()}{x[2].lower()}{get_password_random_char()}"
     createFile.write(f'echo "{uName}:{passwd}" | chpasswd\n')
-    listingFile.write(f'"{uName}";"{passwd}"\n')
+    listingFile.write(f'"{uName}","{passwd}"\n')
     return uName
 
 
@@ -145,7 +148,7 @@ def create_user(path: str, outputDir: str) -> None:
             createFile.write("#! /bin/sh\ngroupadd student\n")
             createFile.write("groupadd teacher\n")
             deleteFile.write("#! /bin/sh\n")
-            listingFile.write("Username;Password\n")
+            listingFile.write("Username,Password\n")
 
             addedUsers = []
             for row in ws.iter_rows(min_row=2):
@@ -155,42 +158,28 @@ def create_user(path: str, outputDir: str) -> None:
                 addCommands(createFile, deleteFile, listingFile, x, addedUsers)
 
         logger.info("Added classes successfully.")
+
     except FileNotFoundError:
         logger.critical(f"Couldn't find file {path}")
     except Exception:
         logger.critical(f"Couldn't access file {path}")
+    to_excel(getSafeFilePaths(outputDir)[2],outputDir+"/list.xlsx")
 
 
-# - ein Bash-Script2 mit allen notwendigen Schritten/Befehlen zum Erzeugen der Benutzer3
-# – ein Bash-Script zum Löschen der angelegten Benutzer
-# – eine Liste mit Usernamen und Passwörtern zum Verteilen an die unterrichtenden Lehrer
-# – ein Logfile mit sinnvollen Angaben
+def to_excel(csv_file, excel_file):
+    # Create a new Excel workbook and select the active sheet
+    workbook = Workbook()
+    sheet = workbook.active
 
+    # Open the CSV file and read its content
+    with open(csv_file, 'r') as csvfile:
+        csvreader = csv.reader(csvfile)
+        # Iterate over the rows in the CSV file and write them to the Excel sheet
+        for row_index, row in enumerate(csvreader, start=1):
+            for col_index, value in enumerate(row, start=1):
+                sheet.cell(row=row_index, column=col_index, value=value)
 
-# – der Dateiname für die Eingabedatei soll auf der Kommandozeile angegeben werden (ohne vorangestelltes
-# -f o.ä.).
-# – mit den Optionen -v für verbose und -q für quite soll der Umfang des Loggings eingestellt werden können
-# (Loglevel).
-# ∗ damit sollten sich auch die Bash-Scripts ändern
-
-# Die Home-Verzeichnisse der Benutzer soll unter /home/klassen bzw. /home/lehrer/ angelegt werden,
-
-# – Wichtig: eventuell braucht man im Script ein Escape (“\”) beim Passwort, aber nicht im Textfile!
-
-# – bei bereits existierenden Benutzern sollte eine Fehlermeldung erfolgen.
-# – die Bash-Scripts sollten bei Problemen abbrechen
-
-# – Logging
-# ∗ Wir wollen einen RotatingFileHandler mit maximal 10.000 Bytes7 und maximal 5 alte Versionen
-# (backup).
-# ∗ Zusätzlich ist ein StreamHandler (=Ausgabe auf der Konsole) anzulegen.
-# ∗ Tipp: je nach Kommandozeilen-Parametern kann man zB. logging.basicConfig(level=logging.DEBUG)
-# oder logger.setLevel(logging.WARNING) aufrufen.
-# ∗ Alternative: logging.config.fileConfig('logging.conf')
-# ∗ es sollte für jede Art von Meldung mindestens einen Aufruf geben
-# · Fehler “Datei nicht gefunden” statt Exception
-# · Debug: alle Details zur Fehlersuche
-
-
+    # Save the Excel file
+    workbook.save(excel_file)
 if __name__ == "__main__":
     start_program()
