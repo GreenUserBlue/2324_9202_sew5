@@ -99,6 +99,7 @@ public class Labyrinth {
         if (lab[zeile][spalte] == 'A') return true;
         if (lab[zeile][spalte] == '#' || lab[zeile][spalte] == 'X') return false;
         char old = lab[zeile][spalte];
+
         lab[zeile][spalte] = 'X';
 
         if (suchen(zeile + 1, spalte, lab)) return true;
@@ -140,6 +141,7 @@ public class Labyrinth {
         char[][] labyrinth = fromStrings(maps[map]);
         printLabyrinth(labyrinth);
         System.out.println("Ausgang gefunden: " + (suchen(5, 5, labyrinth) ? "ja" : "nein"));
+        printLabyrinth(labyrinth);
 
         labyrinth = fromStrings(maps[map]);
         System.out.println("Anzahl Wege: " + suchenAlle(5, 5, labyrinth));
