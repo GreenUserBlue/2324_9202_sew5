@@ -3,6 +3,11 @@ import time
 
 
 class LabyrinthSolver:
+
+    border_char = '#'
+    visited_char = 'X'
+    target_char = 'A'
+
     def __init__(self, filename, x_start, y_start, should_print, print_time, delay):
         self.labyrinth = self.load_labyrinth(filename)
         self.x_start = x_start
@@ -20,16 +25,14 @@ class LabyrinthSolver:
     def search_all(self, zeile, spalte, lab):
         if zeile < 0 or spalte < 0 or zeile >= len(lab) or spalte >= len(lab[0]):
             return 0
-        if lab[zeile][spalte] == 'A':
+        if lab[zeile][spalte] == LabyrinthSolver.target_char:
             self.add_solution(lab)
             return 1
-        if lab[zeile][spalte] == '#' or lab[zeile][spalte] == 'X':
+        if lab[zeile][spalte] == LabyrinthSolver.border_char or lab[zeile][spalte] == LabyrinthSolver.visited_char:
             return 0
         amount = 0
         old = lab[zeile][spalte]
-        lab[zeile] = lab[zeile][:spalte] + 'X' + lab[zeile][spalte + 1:]
-
-        self.print_solution(lab)
+        lab[zeile] = lab[zeile][:spalte] + LabyrinthSolver.visited_char + lab[zeile][spalte + 1:]
 
         amount += self.search_all(zeile + 1, spalte, lab)
         amount += self.search_all(zeile, spalte + 1, lab)
@@ -42,11 +45,17 @@ class LabyrinthSolver:
         start_time = time.time()
 
         amount = self.search_all(self.x_start, self.y_start, self.labyrinth)
-        print(amount)
         elapsed_time = (time.time() - start_time) * 1000
-        # for i in self.solutions:
-        #     print(str(i))
-        # print(len(self.solutions))
+
+        print(f"nbr of solutions: {amount}")
+
+        if self.should_print:
+            for i in self.solutions:
+                print(str(i))
+                print()
+
+            print(f"nbr of solutions: {amount}")
+
         if self.print_time:
             print(f"Total calculation time: {elapsed_time:.2f} ms")
 
@@ -60,7 +69,6 @@ class LabyrinthSolver:
         s = ""
         for i in solution:
             s += str(i) + '\n'
-
         print(s)
 
     def run(self):
