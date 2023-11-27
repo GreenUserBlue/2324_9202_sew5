@@ -13,12 +13,12 @@ from openpyxl import load_workbook
 __author__ = "Zwickelstorfer Felix"
 
 
-def setUpLogger() -> None:
+def setUpLogger(path:str) -> None:
     """ creates the logger """
     global logger
     logger = logging.getLogger('my_logger')
     logger.setLevel(logging.INFO)
-    file_handler = RotatingFileHandler('classes_logfile.log', maxBytes=10000, backupCount=5)
+    file_handler = RotatingFileHandler(getSafeFilePaths(path)[3], maxBytes=10000, backupCount=5)
     file_handler.setFormatter(logging.Formatter('[%(asctime)s] %(levelname)s %(message)s'))
     stream_handler = logging.StreamHandler()
     stream_formatter = logging.Formatter('%(levelname)s - %(message)s')
@@ -39,7 +39,7 @@ def start_program() -> None:
     args = parser.parse_args()
     global logger
     if "logger" not in globals():
-        setUpLogger()
+        setUpLogger("./outClasses")
     if args.verbose:
         logger.setLevel(logging.DEBUG)
     elif args.quiet:
@@ -149,7 +149,7 @@ def createClasses(path: str, outputDir: str) -> None:
     """
     global logger
     if "logger" not in globals():
-        setUpLogger()
+        setUpLogger("./outClasses")
     try:
         os.makedirs(outputDir, exist_ok=True)
         wb = load_workbook(path, read_only=True)
