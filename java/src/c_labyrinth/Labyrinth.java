@@ -117,7 +117,7 @@ public class Labyrinth {
      *
      * @param zeile  aktuelle Position
      * @param spalte aktuelle Position
-     * @param lab
+     * @param lab das aktuelle labyrinth
      * @throws InterruptedException für die verlangsamte Ausgabe mit sleep()
      */
     public static int suchenAlle(int zeile, int spalte, char[][] lab) throws InterruptedException {

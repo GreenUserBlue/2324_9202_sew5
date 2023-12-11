@@ -3,6 +3,7 @@ import time
 
 
 class LabyrinthSolver:
+    """ """
 
     border_char = '#'
     visited_char = 'X'
