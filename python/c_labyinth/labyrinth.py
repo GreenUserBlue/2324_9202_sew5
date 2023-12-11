@@ -3,7 +3,11 @@ import time
 
 
 class LabyrinthSolver:
-    """ """
+    """
+    >>> solver = LabyrinthSolver("l2.txt", 5, 5, False, 0, 0)
+    >>> solver.run()
+    nbr of solutions: 486
+    """
 
     border_char = '#'
     visited_char = 'X'
@@ -19,6 +23,7 @@ class LabyrinthSolver:
         self.solutions = set()
 
     def load_labyrinth(self, filename):
+        """ reads the labyrinth """
         with open(filename, 'r') as file:
             labyrinth = [line.strip() for line in file]
         return labyrinth

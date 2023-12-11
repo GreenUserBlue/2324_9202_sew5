@@ -1,5 +1,10 @@
 package c_labyrinth;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 /**
  * @author Zwickelstorfer Felix
  */
@@ -54,6 +59,12 @@ public class Labyrinth {
             "# #    #     ##  ##  # ###   # #",
             "# ####   ###### #### # ###  ## #",
             "###########################A####"
+    }, {
+            "#############",
+            "#           #",
+            "#           #",
+            "#           #",
+            "###########A#"
     }};
 
     /**
@@ -135,15 +146,28 @@ public class Labyrinth {
         return amount;
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    /**
+     * a method that reads a file and makes it to a char[][] array
+     * @param path the file path
+     * @throws IOException if the file doesn't exist
+     */
+    public static char[][] fromFile(Path path) throws IOException {
+        return fromStrings(Files.readAllLines(path).toArray(new String[0]));
+    }
 
-        var map=2;
+    public static void main(String[] args) throws InterruptedException, IOException {
+
+        var map=3;
         char[][] labyrinth = fromStrings(maps[map]);
         printLabyrinth(labyrinth);
-        System.out.println("Ausgang gefunden: " + (suchen(5, 5, labyrinth) ? "ja" : "nein"));
-        printLabyrinth(labyrinth);
+//        System.out.println("Ausgang gefunden: " + (suchen(5, 5, labyrinth) ? "ja" : "nein"));
+//        printLabyrinth(labyrinth);
 
         labyrinth = fromStrings(maps[map]);
         System.out.println("Anzahl Wege: " + suchenAlle(5, 5, labyrinth));
+
+
+//        printLabyrinth(fromFile(Paths.get("res/c_labyrinth/l2.txt")));
+//        System.out.println((suchenAlle(5,5,fromFile(Paths.get("res/c_labyrinth/l3.txt")))));
     }
 }
