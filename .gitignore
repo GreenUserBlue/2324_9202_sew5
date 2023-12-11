@@ -1,7 +1,7 @@
-/venv/
-/.idea/
-/b_User_creates/outClasses/
-/b_User_creates/outUser/
+**/venv/
+**/.idea/
+**/outClasses/
+**/outUser/
 *.xml
-/__pycache__/
-/out/
+**/__pycache__/
+**/out/
