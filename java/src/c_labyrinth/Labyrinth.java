@@ -7,6 +7,8 @@ import java.nio.file.Paths;
 
 /**
  * @author Zwickelstorfer Felix
+ *
+ * implementiert eine labyrinthlogik statisch
  */
 public class Labyrinth {
 
@@ -157,17 +159,17 @@ public class Labyrinth {
 
     public static void main(String[] args) throws InterruptedException, IOException {
 
-        var map=3;
+        var map=2;
         char[][] labyrinth = fromStrings(maps[map]);
         printLabyrinth(labyrinth);
 //        System.out.println("Ausgang gefunden: " + (suchen(5, 5, labyrinth) ? "ja" : "nein"));
 //        printLabyrinth(labyrinth);
 
-        labyrinth = fromStrings(maps[map]);
-        System.out.println("Anzahl Wege: " + suchenAlle(5, 5, labyrinth));
+//        labyrinth = fromStrings(maps[map]);
+//        System.out.println("Anzahl Wege: " + suchenAlle(5, 5, labyrinth));
 
 
 //        printLabyrinth(fromFile(Paths.get("res/c_labyrinth/l2.txt")));
-//        System.out.println((suchenAlle(5,5,fromFile(Paths.get("res/c_labyrinth/l3.txt")))));
+        System.out.println((suchenAlle(5,5,fromFile(Paths.get("res/c_labyrinth/l1.txt")))));
     }
 }
