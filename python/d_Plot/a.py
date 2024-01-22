@@ -59,6 +59,35 @@ plt.annotate(r'$\cos(\frac{2\pi}{3})=-\frac{1}{2}$',
 for label in ax.get_xticklabels() + ax.get_yticklabels():
     label.set_fontsize(16)
     label.set_bbox(dict(facecolor='white', edgecolor='None', alpha=0.65))
+
+
+
+
+
+
+
+
+#eigenes
+# Punkte
+t = -PI / 4
+plt.plot([t, t], [0, math.cos(t)], color='green', linewidth=2.5, linestyle="--")
+plt.scatter([t, ], [math.cos(t), ], 50, color='green')
+plt.annotate(r'$\sin(\minus\frac{\pi}{4})=-\frac{\sqrt{2}}{2}$',
+             xy=(t, math.sin(t)), xycoords='data',
+             xytext=(-10, -30), textcoords='offset points', fontsize=16,
+             arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=.2"))
+
+plt.plot([t, t], [0, math.sin(t)], color='orange', linewidth=2.5, linestyle="--")
+plt.scatter([t, ], [math.sin(t), ], 50, color='orange')
+plt.annotate(r'$\cos(\minus\frac{\pi}{4}))=\frac{\sqrt{2}}{2}$',
+             xy=(t, math.cos(t)), xycoords='data',
+             xytext=(-90, +50), textcoords='offset points', fontsize=16,
+             arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=.2"))
+# Schönheit: bessere Sichtbarkeit für die Ticks
+for label in ax.get_xticklabels() + ax.get_yticklabels():
+    label.set_fontsize(16)
+    label.set_bbox(dict(facecolor='white', edgecolor='None', alpha=0.65))
+
 ax.set_axisbelow(True)
 
 
