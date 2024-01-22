@@ -14,8 +14,8 @@ plt.plot(X, C)
 plt.plot(X, S)
 # Etwas schöner5
 plt.figure(figsize=(10, 6), dpi=80)
-plt.plot(X, C, color="green", linewidth=2.5, linestyle="-")
-plt.plot(X, S, color="orange", linewidth=2.5, linestyle="-")
+# plt.plot(X, C, color="green", linewidth=2.5, linestyle="--")
+# plt.plot(X, S, color="orange", linewidth=2.5, linestyle=':')
 
 # Etwas mehr Platz um die Grafik 6
 plt.xlim(min(X) * 1.1, max(X) * 1.1)
@@ -29,8 +29,8 @@ plt.xticks([-PI, -PI / 2, 0, PI / 2, PI],
 plt.yticks([-1, 0, +1],
            [r'$-1$', r'$0$', r'$+1$'])
 # Und eine Legende darf auch nicht fehlen:
-plt.plot(X, C, color="green", linewidth=2.5, linestyle="-", label="cosine")
-plt.plot(X, S, color="orange", linewidth=2.5, linestyle="-", label="sine")
+plt.plot(X, C, color="green", linewidth=2.5, linestyle="--", label="cosine")
+plt.plot(X, S, color="orange", linewidth=2.5, linestyle=":", label="sine")
 plt.legend(loc='upper left', frameon=False)
 # Und Achsen braucht man natürlich auch:
 ax = plt.gca()
@@ -85,7 +85,7 @@ plt.annotate(r'$\cos(\minus\frac{\pi}{4}))=\frac{\sqrt{2}}{2}$',
              arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=.2"))
 # Schönheit: bessere Sichtbarkeit für die Ticks
 for label in ax.get_xticklabels() + ax.get_yticklabels():
-    label.set_fontsize(16)
+    label.set_fontsize(13)
     label.set_bbox(dict(facecolor='white', edgecolor='None', alpha=0.65))
 
 ax.set_axisbelow(True)
