@@ -81,7 +81,7 @@ plt.plot([t, t], [0, math.sin(t)], color='orange', linewidth=2.5, linestyle="--"
 plt.scatter([t, ], [math.sin(t), ], 50, color='orange')
 plt.annotate(r'$\cos(\minus\frac{\pi}{4}))=\frac{\sqrt{2}}{2}$',
              xy=(t, math.cos(t)), xycoords='data',
-             xytext=(-90, +50), textcoords='offset points', fontsize=16,
+             xytext=(-90, +30), textcoords='offset points', fontsize=16,
              arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=.2"))
 # Schönheit: bessere Sichtbarkeit für die Ticks
 for label in ax.get_xticklabels() + ax.get_yticklabels():
@@ -90,6 +90,8 @@ for label in ax.get_xticklabels() + ax.get_yticklabels():
 
 ax.set_axisbelow(True)
 
+
+plt.title("Zwicki's great graphic")
 
 plt.savefig("plot1_zwickelstorfer1.png", dpi=72)
 # plt.show()
