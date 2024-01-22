@@ -14,8 +14,8 @@ plt.plot(X, C)
 plt.plot(X, S)
 # Etwas schöner5
 plt.figure(figsize=(10, 6), dpi=80)
-plt.plot(X, C, color="blue", linewidth=2.5, linestyle="-")
-plt.plot(X, S, color="red", linewidth=2.5, linestyle="-")
+plt.plot(X, C, color="green", linewidth=2.5, linestyle="-")
+plt.plot(X, S, color="orange", linewidth=2.5, linestyle="-")
 
 # Etwas mehr Platz um die Grafik 6
 plt.xlim(min(X) * 1.1, max(X) * 1.1)
@@ -29,8 +29,8 @@ plt.xticks([-PI, -PI / 2, 0, PI / 2, PI],
 plt.yticks([-1, 0, +1],
            [r'$-1$', r'$0$', r'$+1$'])
 # Und eine Legende darf auch nicht fehlen:
-plt.plot(X, C, color="blue", linewidth=2.5, linestyle="-", label="cosine")
-plt.plot(X, S, color="red", linewidth=2.5, linestyle="-", label="sine")
+plt.plot(X, C, color="green", linewidth=2.5, linestyle="-", label="cosine")
+plt.plot(X, S, color="orange", linewidth=2.5, linestyle="-", label="sine")
 plt.legend(loc='upper left', frameon=False)
 # Und Achsen braucht man natürlich auch:
 ax = plt.gca()
@@ -43,14 +43,14 @@ ax.spines['left'].set_position(('data', 0))
 # Ein paar Punkte besonders kennzeichnen7
 # :
 t = 2 * PI / 3
-plt.plot([t, t], [0, math.cos(t)], color='blue', linewidth=2.5, linestyle="--")
-plt.scatter([t, ], [math.cos(t), ], 50, color='blue')
+plt.plot([t, t], [0, math.cos(t)], color='green', linewidth=2.5, linestyle="--")
+plt.scatter([t, ], [math.cos(t), ], 50, color='green')
 plt.annotate(r'$\sin(\frac{2\pi}{3})=\frac{\sqrt{3}}{2}$',
              xy=(t, math.sin(t)), xycoords='data',
              xytext=(+10, +30), textcoords='offset points', fontsize=16,
              arrowprops=dict(arrowstyle="->", connectionstyle="arc3,rad=.2"))
-plt.plot([t, t], [0, math.sin(t)], color='red', linewidth=2.5, linestyle="--")
-plt.scatter([t, ], [math.sin(t), ], 50, color='red')
+plt.plot([t, t], [0, math.sin(t)], color='orange', linewidth=2.5, linestyle="--")
+plt.scatter([t, ], [math.sin(t), ], 50, color='orange')
 plt.annotate(r'$\cos(\frac{2\pi}{3})=-\frac{1}{2}$',
              xy=(t, math.cos(t)), xycoords='data',
              xytext=(-90, -50), textcoords='offset points', fontsize=16,
@@ -63,3 +63,4 @@ ax.set_axisbelow(True)
 
 
 plt.savefig("plot1_zwickelstorfer1.png", dpi=72)
+# plt.show()
