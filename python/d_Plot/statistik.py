@@ -9,6 +9,7 @@ import numpy as np
 
 
 def get_logger(args: argparse.Namespace) -> logging.Logger:
+    """creates a logger"""
     logger = logging.getLogger('my_logger')
     if args.verbose:
         logger.setLevel(logging.DEBUG)
@@ -29,10 +30,10 @@ def get_logger(args: argparse.Namespace) -> logging.Logger:
     return logger
 
 
-def main(args: argparse.Namespace):
+def main(args: argparse.Namespace) -> None:
     logger = get_logger(args)
     try:
-        git_log = ["git", "log", "--pretty=format:%ad", "--date=format-local:%a-%H-%M"]
+        git_log = ["git", "-C", args.filename, "log", "--pretty=format:%ad", "--date=format-local:%a-%H-%M"]
         process = Popen(git_log, stdout=PIPE, stderr=PIPE, text=True)
         out, err = process.communicate()
 
