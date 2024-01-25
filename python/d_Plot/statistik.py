@@ -8,7 +8,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
-def get_logger(args) -> logging.Logger:
+def get_logger(args: argparse.Namespace) -> logging.Logger:
     logger = logging.getLogger('my_logger')
     if args.verbose:
         logger.setLevel(logging.DEBUG)
@@ -29,51 +29,54 @@ def get_logger(args) -> logging.Logger:
     return logger
 
 
-def main(args):
+def main(args: argparse.Namespace):
     logger = get_logger(args)
-    git_log = ["git", "log", "--pretty=format:%ad", "--date=format-local:%a-%H-%M"]
-    process = Popen(git_log, stdout=PIPE, stderr=PIPE, text=True)
-    out, err = process.communicate()
+    try:
+        git_log = ["git", "log", "--pretty=format:%ad", "--date=format-local:%a-%H-%M"]
+        process = Popen(git_log, stdout=PIPE, stderr=PIPE, text=True)
+        out, err = process.communicate()
 
-    logger.debug("Got Data from command")
+        logger.debug("Got Data from command")
 
-    time_window = 0.5  # 1/4 hour
+        time_window = 0.5  # 1/4 hour
 
-    weekdays = ["", "mon", "tue", "wed", "thu", "fri", "sat", "sun", ""]
+        weekdays = ["", "mon", "tue", "wed", "thu", "fri", "sat", "sun", ""]
 
-    grouped_data = Counter()
-    nbrOfCommits = 0
-    for i in out.splitlines():
-        cur = i.split("-")
-        grouped_data[(cur[0].lower(), (np.floor((int(cur[1]) + int(cur[2]) / 60) / time_window) * time_window))] += 1
-        nbrOfCommits += 1
+        grouped_data = Counter()
+        nbrOfCommits = 0
+        for i in out.splitlines():
+            cur = i.split("-")
+            grouped_data[(cur[0].lower(), (np.floor((int(cur[1]) + int(cur[2]) / 60) / time_window) * time_window))] += 1
+            nbrOfCommits += 1
 
-    logger.debug("Sorted Data")
+        logger.debug("Sorted Data")
 
-    min_size = 50
-    additional_size = 25
+        min_size = 50
+        additional_size = 25
 
-    data = {"x": [], "y": [], "sizes": []}
-    for day, time in grouped_data:
-        data["x"].append(time)
-        data["y"].append(weekdays.index(day))
-        data["sizes"].append(min_size + additional_size * grouped_data[(day, time)])
-    plt.figure(figsize=(10, 8))
+        data = {"x": [], "y": [], "sizes": []}
+        for day, time in grouped_data:
+            data["x"].append(time)
+            data["y"].append(weekdays.index(day))
+            data["sizes"].append(min_size + additional_size * grouped_data[(day, time)])
+        plt.figure(figsize=(10, 8))
 
-    plt.ylabel('Weekday')
-    plt.scatter(data['x'], data['y'], s=data['sizes'], alpha=0.5)
-    plt.yticks(range(len(weekdays)), labels=weekdays)
-    plt.xticks(range(0, 25, 4))
+        plt.ylabel('Weekday')
+        plt.scatter(data['x'], data['y'], s=data['sizes'], alpha=0.5)
+        plt.yticks(range(len(weekdays)), labels=weekdays)
+        plt.xticks(range(0, 25, 4))
 
-    plt.xlabel('Time')
-    plt.title(f'Felix Zwickelstorfer: {nbrOfCommits} commits')
-    plt.grid(True, which="major", axis="y", linestyle="-", linewidth=2, color='black')
-    plt.xlabel('Weekday')
-    logger.debug("Setted the data")
+        plt.xlabel('Time')
+        plt.title(f'Felix Zwickelstorfer: {nbrOfCommits} commits')
+        plt.grid(True, which="major", axis="y", linestyle="-", linewidth=2, color='black')
+        plt.xlabel('Weekday')
+        logger.debug("Setted the data")
 
-    plt.savefig("statistic.png", dpi=72)
+        plt.savefig("statistic_new.png", dpi=72)
 
-    logger.info("Finished drawing")
+        logger.info("Finished drawing")
+    except:
+        logger.error("There was an error")
 
 
 if __name__ == "__main__":
