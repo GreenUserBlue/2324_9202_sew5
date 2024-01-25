@@ -10,23 +10,20 @@ out, err = process.communicate()
 
 time_window = 0.5  # 1/4 hour
 
-points = list()
-for i in out.splitlines():
-    cur = i.split("-")
-    points.append((cur[0].lower(), (np.floor((int(cur[1]) + int(cur[2]) / 60) / time_window) * time_window)))
-
 weekdays = ["","mon", "tue", "wed", "thu", "fri", "sat", "sun",""]
 
-# Group the data by day and window
-grouped_data = Counter()
 
-for day, timestamp in points:
-    grouped_data[(day, timestamp)] += 1
+grouped_data = Counter()
+nbrOfCommits=0
+for i in out.splitlines():
+    cur = i.split("-")
+    grouped_data[(cur[0].lower(), (np.floor((int(cur[1]) + int(cur[2]) / 60) / time_window) * time_window))] += 1
+    nbrOfCommits+=1
+
 
 min_size = 50
-additional_size = 15
+additional_size = 25
 
-print(grouped_data)
 max_val = max(grouped_data.values())
 
 data = {"x": [], "y": [], "sizes": []}
@@ -36,18 +33,15 @@ for day, time in grouped_data:
     data["sizes"].append(min_size +  additional_size* grouped_data[(day, time)])
 plt.figure(figsize=(10, 8))
 
-print(data)
 plt.ylabel('Weekday')
 plt.scatter(data['x'], data['y'], s=data['sizes'], alpha=0.5)
 plt.yticks(range(len(weekdays)), labels=weekdays)
 plt.xticks(range(0, 25, 4))
 
 plt.xlabel('Time')
-plt.title(f'Max Mustermann: {len(points)} commits')
-# plt.gca().invert_yaxis()  # Invert y-axis to have 'sun' at the top
-# plt.grid(True)
+plt.title(f'Felix Zwickelstorfer: {nbrOfCommits} commits')
+plt.grid(True, which="major", axis="y", linestyle="-",linewidth = 2 ,color = 'black')
 plt.xlabel('Weekday')
-# plt.title('Weekday Statistics with Circle Sizes Based on Commit Counts')
 
 plt.savefig("plot1_zwickelstorfer2.png", dpi=72)
 # plt.show()
