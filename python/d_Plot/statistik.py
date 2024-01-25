@@ -43,5 +43,5 @@ plt.title(f'Felix Zwickelstorfer: {nbrOfCommits} commits')
 plt.grid(True, which="major", axis="y", linestyle="-",linewidth = 2 ,color = 'black')
 plt.xlabel('Weekday')
 
-plt.savefig("plot1_zwickelstorfer2.png", dpi=72)
+plt.savefig("statistic.png", dpi=72)
 # plt.show()
