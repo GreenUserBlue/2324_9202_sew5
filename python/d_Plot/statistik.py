@@ -15,7 +15,7 @@ for i in out.splitlines():
     cur = i.split("-")
     points.append((cur[0].lower(), (np.floor((int(cur[1]) + int(cur[2]) / 60) / time_window) * time_window)))
 
-weekdays = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"]
+weekdays = ["","mon", "tue", "wed", "thu", "fri", "sat", "sun",""]
 
 # Group the data by day and window
 grouped_data = Counter()
