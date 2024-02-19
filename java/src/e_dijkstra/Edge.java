@@ -1,7 +1,28 @@
 package e_dijkstra;
 
-public class Edge {
-
+class Edge {
     private int distance;
-    private Node neighbor;
+    private Node neighbour;
+
+    public Edge(int distance, Node neighbour) {
+        this.distance = distance;
+        this.neighbour = neighbour;
+    }
+
+
+    public Node getNeighbour() {
+        return neighbour;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    @Override
+    public String toString() {
+        return "Edge{" +
+                "d=" + distance +
+                ", neigh=" + neighbour.getId() +
+                '}';
+    }
 }
