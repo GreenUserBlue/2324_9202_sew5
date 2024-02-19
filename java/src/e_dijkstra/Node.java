@@ -2,7 +2,6 @@ package e_dijkstra;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.TreeSet;
 
 class Node implements Comparable<Node> {
 
@@ -51,5 +50,11 @@ class Node implements Comparable<Node> {
                 "id='" + id + '\'' +
                 ", edges=" + edges +
                 '}';
+    }
+
+    public void reset() {
+        isVisited = false;
+        previous = null;
+        distance = Integer.MAX_VALUE;
     }
 }

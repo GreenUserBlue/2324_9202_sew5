@@ -40,47 +40,50 @@ class Graph {
         return newNode;
     }
 
-//    public void calcWithDijkstra(String startNodeId) {
-//        for (Node node : nodes) {
-//            node.setDistance(Integer.MAX_VALUE); // Set distance to infinity
-//            node.setPrevious(null); // Reset previous nodes
-//            node.setVisited(false); // Mark all nodes as unvisited
-//        }
-//
-//        Node startNode = findNodeById(startNodeId);
-//        if (startNode == null) {
-//            throw new IllegalArgumentException("Start node " + startNodeId + " not found in the graph.");
-//        }
-//        startNode.setDistance(0); // Distance from start node to itself is 0
-//
-//        PriorityQueue<Node> queue = new PriorityQueue<>(Comparator.comparingInt(Node::getDistance));
-//        queue.add(startNode);
-//
-//        while (!queue.isEmpty()) {
-//            Node currentNode = queue.poll(); // Node with the shortest distance
-//            if (currentNode.isVisited()) continue; // Skip nodes already visited
-//            currentNode.setVisited(true);
-//
-//            for (Edge edge : currentNode.getEdges()) {
-//                Node neighbour = edge.getNeighbour();
-//                int newDist = currentNode.getDistance() + edge.getDistance();
-//                if (newDist < neighbour.getDistance()) {
-//                    neighbour.setDistance(newDist);
-//                    neighbour.setPrevious(currentNode);
-//                    queue.add(neighbour);
-//                }
-//            }
-//        }
-//    }
+    public void calcWithDijkstra(String startNodeId) {
 
-//    private Node findNodeById(String id) {
-//        for (Node node : nodes) {
-//            if (node.getId().equals(id)) {
-//                return node;
-//            }
-//        }
-//        return null;
-//    }
+        if (startNodeId == null) {
+            throw new IllegalArgumentException("Start node id must not be null.");
+        }
+
+        for (Node node : nodes) {
+            node.reset();
+        }
+
+        Node startNode = findNodeById(startNodeId);
+        if (startNode == null) {
+            throw new IllegalArgumentException("Start node " + startNodeId + " not found in the graph.");
+        }
+        startNode.setDistance(0); // Distance from start node to itself is 0
+
+        PriorityQueue<Node> queue = new PriorityQueue<>(Comparator.comparingInt(Node::getDistance));
+        queue.add(startNode);
+
+        while (!queue.isEmpty()) {
+            Node currentNode = queue.poll(); // Node with the shortest distance
+            if (currentNode.isVisited()) continue; // Skip nodes already visited
+            currentNode.setVisited(true);
+
+            for (Edge edge : currentNode.getEdges()) {
+                Node neighbour = edge.getNeighbour();
+                int newDist = currentNode.getDistance() + edge.getDistance();
+                if (newDist < neighbour.getDistance()) {
+                    neighbour.setDistance(newDist);
+                    neighbour.setPrevious(currentNode);
+                    queue.add(neighbour);
+                }
+            }
+        }
+    }
+
+    private Node findNodeById(String id) {
+        for (Node node : nodes) {
+            if (node.getId().equals(id)) {
+                return node;
+            }
+        }
+        return null;
+    }
 
     @Override
     public String toString() {
@@ -111,9 +114,7 @@ class Graph {
     }
 
     public static void main(String[] args) throws IOException {
-
         Graph g = new Graph(Path.of("res/e_dijkstra/Graph_A-H.csv"));
-
         System.out.println(g.nodes);
     }
 }
