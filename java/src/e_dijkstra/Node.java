@@ -78,6 +78,11 @@ class Node implements Comparable<Node> {
     }
 
     public String edgesToStr() {
-        return edges.stream().map(it->it.getNeighbour().id+":"+it.getDistance()).collect(Collectors.joining(" ","",""));
+        return edges.stream().map(it -> it.getNeighbour().id + ":" + it.getDistance()).collect(Collectors.joining(" ", "", ""));
+    }
+
+    public boolean isFirst() {
+        //man braucht beides, da die distance zu einem neighbor 0 sein kann, oder wenn etwas nicht erreichbar das previous auch null ist
+        return previous == null && distance == 0;
     }
 }

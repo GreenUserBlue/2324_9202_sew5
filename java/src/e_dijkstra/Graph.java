@@ -79,23 +79,31 @@ class Graph {
     public String toString() {
         StringBuilder builder = new StringBuilder();
 
-        Node startNode = nodes.stream().filter(it -> it.getDistance() == 0).findFirst().orElse(null);
+        Node startNode = nodes.stream().filter(Node::isFirst).findFirst().orElse(null);
 
         for (Node node : nodes) {
-            if (node == startNode) {
-                builder.append(node.getId()).append("----> is start node ").append(node.edgesToStr()).append("\n");
-            }
-            builder.append(node.getId()).append(" [totalDistance: ").append(node.getDistance() != Integer.MAX_VALUE ? node.getDistance() : "?").append("] ").append(node.edgesToStr()).append("\n");
+            if (node == startNode) builder
+                    .append(node.getId())
+                    .append("----> is start node ")
+                    .append(node.edgesToStr())
+                    .append("\n");
+            else builder
+                    .append(node.getId())
+                    .append(" [totalDistance: ")
+                    .append(node.getDistance() != Integer.MAX_VALUE ? node.getDistance() : "?").append("] ")
+                    .append(node.edgesToStr())
+                    .append("\n");
         }
         return builder.toString();
     }
 
-    public String getAllPaths(String startNodeId) {
+    public String getAllPaths() {
+        Node startNode = nodes.stream().filter(Node::isFirst).findFirst().orElse(null);
         StringBuilder builder = new StringBuilder();
-        for (Node node : nodes) {
-            builder.append("Path from ").append(startNodeId).append(" to ").append(node.getId())
-                    .append(": ").append(getPath(node)).append(", Distance: ").append(node.getDistance()).append("\n");
-        }
+//        for (Node node : nodes) {
+//            builder.append("Path from ").append(startNodeId).append(" to ").append(node.getId())
+//                    .append(": ").append(getPath(node)).append(", Distance: ").append(node.getDistance()).append("\n");
+//        }
         return builder.toString();
     }
 
@@ -111,5 +119,21 @@ class Graph {
     public static void main(String[] args) throws IOException {
         Graph g = new Graph(Path.of("res/e_dijkstra/Graph_A-H.csv"));
         System.out.println(g);
+        System.out.println();
+        System.out.println(g.getAllPaths());
+        System.out.println();
+
+        g.calcWithDijkstra("A");
+        System.out.println(g);
+        System.out.println();
+        System.out.println(g.getAllPaths());
+        System.out.println();
+
+
+        g.calcWithDijkstra("D");
+        System.out.println(g);
+        System.out.println();
+        System.out.println(g.getAllPaths());
+        System.out.println();
     }
 }
