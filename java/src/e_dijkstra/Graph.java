@@ -54,7 +54,7 @@ class Graph {
         if (startNode == null) {
             throw new IllegalArgumentException("Start node " + startNodeId + " not found in the graph.");
         }
-        startNode.setDistance(0); // Distance from start node to itself is 0
+        startNode.setStartNode();
 
         PriorityQueue<Node> queue = new PriorityQueue<>(Comparator.comparingInt(Node::getDistance));
         queue.add(startNode);
@@ -62,17 +62,7 @@ class Graph {
         while (!queue.isEmpty()) {
             Node currentNode = queue.poll(); // Node with the shortest distance
             if (currentNode.isVisited()) continue; // Skip nodes already visited
-            currentNode.setVisited(true);
-
-            for (Edge edge : currentNode.getEdges()) {
-                Node neighbour = edge.getNeighbour();
-                int newDist = currentNode.getDistance() + edge.getDistance();
-                if (newDist < neighbour.getDistance()) {
-                    neighbour.setDistance(newDist);
-                    neighbour.setPrevious(currentNode);
-                    queue.add(neighbour);
-                }
-            }
+            currentNode.visit(queue);
         }
     }
 
@@ -88,14 +78,19 @@ class Graph {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
+
+        Node startNode = nodes.stream().filter(it -> it.getDistance() == 0).findFirst().orElse(null);
+
         for (Node node : nodes) {
-            builder.append(node.toString()).append("\n");
+            if (node == startNode) {
+                builder.append(node.getId()).append("----> is start node ").append(node.edgesToStr()).append("\n");
+            }
+            builder.append(node.getId()).append(" [totalDistance: ").append(node.getDistance() != Integer.MAX_VALUE ? node.getDistance() : "?").append("] ").append(node.edgesToStr()).append("\n");
         }
         return builder.toString();
     }
 
     public String getAllPaths(String startNodeId) {
-//        calcWithDijkstra(startNodeId);
         StringBuilder builder = new StringBuilder();
         for (Node node : nodes) {
             builder.append("Path from ").append(startNodeId).append(" to ").append(node.getId())
@@ -115,6 +110,6 @@ class Graph {
 
     public static void main(String[] args) throws IOException {
         Graph g = new Graph(Path.of("res/e_dijkstra/Graph_A-H.csv"));
-        System.out.println(g.nodes);
+        System.out.println(g);
     }
 }

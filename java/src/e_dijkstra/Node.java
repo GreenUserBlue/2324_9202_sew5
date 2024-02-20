@@ -2,6 +2,8 @@ package e_dijkstra;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
+import java.util.stream.Collectors;
 
 class Node implements Comparable<Node> {
 
@@ -56,5 +58,26 @@ class Node implements Comparable<Node> {
         isVisited = false;
         previous = null;
         distance = Integer.MAX_VALUE;
+    }
+
+    public void setStartNode() {
+        distance = 0;
+    }
+
+    public void visit(PriorityQueue<Node> queue) {
+        isVisited = true;
+        for (Edge edge : edges) {
+            Node neighbour = edge.getNeighbour();
+            int newDist = distance + edge.getDistance();
+            if (newDist < neighbour.distance) {
+                neighbour.distance = newDist;
+                neighbour.previous = this;
+                queue.add(edge.getNeighbour());
+            }
+        }
+    }
+
+    public String edgesToStr() {
+        return edges.stream().map(it->it.getNeighbour().id+":"+it.getDistance()).collect(Collectors.joining(" ","",""));
     }
 }
