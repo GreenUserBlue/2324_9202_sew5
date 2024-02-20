@@ -100,20 +100,33 @@ class Graph {
     public String getAllPaths() {
         Node startNode = nodes.stream().filter(Node::isFirst).findFirst().orElse(null);
         StringBuilder builder = new StringBuilder();
-//        for (Node node : nodes) {
-//            builder.append("Path from ").append(startNodeId).append(" to ").append(node.getId())
-//                    .append(": ").append(getPath(node)).append(", Distance: ").append(node.getDistance()).append("\n");
-//        }
+        for (Node node : nodes) {
+            if (node == startNode) builder
+                    .append(node.getId())
+                    .append(": is start node")
+                    .append("\n");
+            else if (node.getDistance() == Integer.MAX_VALUE) builder
+                    .append("no path available for ")
+                    .append(node.getId())
+                    .append(" [totalDistance: ?] ")
+                    .append(node.edgesToStr())
+                    .append("\n");
+            else builder
+                        .append(node.getId())
+                        .append(" ")
+                        .append(getPath(node))
+                        .append("\n");
+        }
         return builder.toString();
     }
 
     private String getPath(Node node) {
         List<String> path = new ArrayList<>();
-        for (Node at = node; at != null; at = at.getPrevious()) {
-            path.add(at.getId());
+        for (Node cur = node; cur.getPrevious() != null; cur = cur.getPrevious()) {
+            path.add( "--(" + cur.getDistance() + ")-> " + cur.getId());
         }
         Collections.reverse(path);
-        return String.join(" -> ", path);
+        return String.join(" ", path);
     }
 
     public static void main(String[] args) throws IOException {
