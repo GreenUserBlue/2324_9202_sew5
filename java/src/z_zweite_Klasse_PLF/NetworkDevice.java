@@ -1,6 +1,12 @@
 package z_zweite_Klasse_PLF;
 
+import static z_zweite_Klasse_PLF.Main.center;
+
 public class NetworkDevice {
+
+    public String getModel() {
+        return model;
+    }
 
     protected String model;
 
@@ -29,20 +35,7 @@ public class NetworkDevice {
                 ;
     }
 
-    private String center(String model, int length) {
-        if (model.length() >= length) {
-            return model;
-        }
-        StringBuilder res = new StringBuilder(model);
-        while (res.length() < length) {
-            res = new StringBuilder(" " + res + " ");
-        }
 
-        if (res.length() != length) {   //if it is odd
-            return res.substring(1);
-        }
-        return res.toString();
-    }
 
     public boolean checkPorts() {
         for (int i = 0; i < ports.length; i++) {

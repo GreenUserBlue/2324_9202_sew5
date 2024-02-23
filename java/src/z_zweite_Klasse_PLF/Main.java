@@ -34,17 +34,32 @@ public class Main {
 // connect devices
         router1.addPatchCable(0, switch1, 5);
         router1.addPatchCable(1, switch2, 3);
-//// create new lab and add devices
-//        CiscoLab myLab = new CiscoLab("HTL Wien 3 Rennweg", 3, 5);
-//        myLab.addDevice(2, 2, switch1);
-//        myLab.addDevice(1, 4, switch2);
-//        myLab.addDevice(0, 0, router1);
-//        System.out.println(myLab);
-//// get maximum path speeds
+// create new lab and add devices
+        CiscoLab myLab = new CiscoLab("HTL Wien 3 Rennweg", 3, 5);
+        myLab.addDevice(2, 2, switch1);
+        myLab.addDevice(1, 4, switch2);
+        myLab.addDevice(0, 0, router1);
+        System.out.println(myLab);
+// get maximum path speeds
 //        System.out.println("From Switch1 to Router1: " + getPathSpeed(switch1, router1) + " bps");
 //        System.out.println("From Switch2 to Router1: " + getPathSpeed(switch2, router1) + " bps");
 //        System.out.println("From Switch1 to Switch2 via Router1: " +
 //                getPathSpeed(switch1, router1, switch2) + " bps");
 
+    }
+
+    public static String center(String model, int length) {
+        if (model.length() >= length) {
+            return model;
+        }
+        StringBuilder res = new StringBuilder(model);
+        while (res.length() < length) {
+            res = new StringBuilder(" " + res + " ");
+        }
+
+        if (res.length() != length) {   //if it is odd
+            return res.substring(1);
+        }
+        return res.toString();
     }
 }
