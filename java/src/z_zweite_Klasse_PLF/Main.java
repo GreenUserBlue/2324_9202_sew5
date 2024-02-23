@@ -17,23 +17,23 @@ public class Main {
         routerPort1.setMaxSpeed(10000000);
         System.out.println(ports1[0]);
         System.out.println(routerPort1);
-//// create new devices with these ports
-//        NetworkDevice switch1 = new Switch("Cisco Catalyst 9300", ports1);
-//        NetworkDevice switch2 = new Switch("Cisco Catalyst 2960", ports2);
-//        NetworkDevice router1 = new Router("Cisco 2911", routerPort0, routerPort1);
-//        System.out.println(switch1);
-//        System.out.println(switch2);
-//        System.out.println(router1);
-//// check devices for unique MAC and IP addresses
-//        System.out.println(switch1.getId() + " - Unique MAC address check: " +
-//                (switch1.checkPorts() ? "OK" : "FAIL"));
-//        System.out.println(switch2.getId() + " - Unique MAC address check: " +
-//                (switch2.checkPorts() ? "OK" : "FAIL"));
-//        System.out.println(router1.getId() + " - Unique MAC && IP address check: " +
-//                (router1.checkPorts() ? "OK" : "FAIL"));
-//// connect devices
-//        router1.addPatchCable(0, switch1, 5);
-//        router1.addPatchCable(1, switch2, 3);
+// create new devices with these ports
+        NetworkDevice switch1 = new Switch("Cisco Catalyst 9300", ports1);
+        NetworkDevice switch2 = new Switch("Cisco Catalyst 2960", ports2);
+        NetworkDevice router1 = new Router("Cisco 2911", routerPort0, routerPort1);
+        System.out.println(switch1);
+        System.out.println(switch2);
+        System.out.println(router1);
+// check devices for unique MAC and IP addresses
+        System.out.println(switch1.getId() + " - Unique MAC address check: " +
+                (switch1.checkPorts() ? "OK" : "FAIL"));
+        System.out.println(switch2.getId() + " - Unique MAC address check: " +
+                (switch2.checkPorts() ? "OK" : "FAIL"));
+        System.out.println(router1.getId() + " - Unique MAC && IP address check: " +
+                (router1.checkPorts() ? "OK" : "FAIL"));
+// connect devices
+        router1.addPatchCable(0, switch1, 5);
+        router1.addPatchCable(1, switch2, 3);
 //// create new lab and add devices
 //        CiscoLab myLab = new CiscoLab("HTL Wien 3 Rennweg", 3, 5);
 //        myLab.addDevice(2, 2, switch1);

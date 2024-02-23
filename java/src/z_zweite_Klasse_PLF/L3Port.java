@@ -1,5 +1,7 @@
 package z_zweite_Klasse_PLF;
 
+import java.util.Objects;
+
 public class L3Port extends L2Port {
 
     private String ip;
@@ -13,5 +15,19 @@ public class L3Port extends L2Port {
     @Override
     public String toString() {
         return super.toString() + ", IPv4 address: " + ip;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        L3Port l3Port = (L3Port) o;
+        return Objects.equals(ip, l3Port.ip);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), ip);
     }
 }
