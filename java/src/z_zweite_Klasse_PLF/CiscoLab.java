@@ -23,32 +23,31 @@ public class CiscoLab {
         int maxLen = devices.length * oneItem;
         String oneLine = "------------------------".repeat(devices.length) + "\n";
 
-        String res = "";
+        StringBuilder res = new StringBuilder();
 
-        res += oneLine ;
-        res += "|" + center(id, maxLen - 2) + "|\n";
-        res += oneLine;
+        res.append(oneLine);
+        res.append("|").append(center(id, maxLen - 2)).append("|\n");
+        res.append(oneLine);
 
         for (int j = 0; j < devices[0].length; j++) {
-            for (int i = 0; i < devices.length; i++) {
-                if(devices[i][j]!=null){
-                    res += "|" + center(devices[i][j].getId(), oneItem - 2) + "|";
-                }else{
-                    res += "|" + center("", oneItem - 2) + "|";
+            for (NetworkDevice[] networkDevices : devices) {
+                if (networkDevices[j] != null) {
+                    res.append("|").append(center(networkDevices[j].getId(), oneItem - 2)).append("|");
+                } else {
+                    res.append("|").append(center("", oneItem - 2)).append("|");
                 }
             }
-            res+="\n";
-            for (int i = 0; i < devices.length; i++) {
-                if(devices[i][j]!=null){
-                    res += "|" + center(devices[i][j].getModel(), oneItem - 2) + "|";
-                }else{
-                    res += "|" + center("", oneItem - 2) + "|";
+            res.append("\n");
+            for (NetworkDevice[] device : devices) {
+                if (device[j] != null) {
+                    res.append("|").append(center(device[j].getModel(), oneItem - 2)).append("|");
+                } else {
+                    res.append("|").append(center("", oneItem - 2)).append("|");
                 }
             }
-            res+="\n";
-            res += oneLine;
+            res.append("\n");
+            res.append(oneLine);
         }
-
-        return res;
+        return res.toString();
     }
 }

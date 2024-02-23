@@ -5,12 +5,12 @@ public class Main {
     public static void main(String[] args) {
         // create new ports for switch1, switch2 and router1
         L2Port[] ports1 = new L2Port[24];
-        for (int i=0; i<24; i++) {
-            ports1[i] = new L2Port(0x00027E, 0x001234+i);
+        for (int i = 0; i < 24; i++) {
+            ports1[i] = new L2Port(0x00027E, 0x001234 + i);
         }
         L2Port[] ports2 = new L2Port[12];
-        for (int i=0; i<12; i++) {
-            ports2[i] = new L2Port(0x00027E, 0x005678+i);
+        for (int i = 0; i < 12; i++) {
+            ports2[i] = new L2Port(0x00027E, 0x005678 + i);
         }
         L2Port routerPort0 = new L3Port(0x00027E, 0x000815, 192, 168, 1, 254);
         L2Port routerPort1 = new L3Port(0x00027E, 0x000816, 10, 0, 79, 254);
@@ -41,11 +41,10 @@ public class Main {
         myLab.addDevice(0, 0, router1);
         System.out.println(myLab);
 // get maximum path speeds
-//        System.out.println("From Switch1 to Router1: " + getPathSpeed(switch1, router1) + " bps");
-//        System.out.println("From Switch2 to Router1: " + getPathSpeed(switch2, router1) + " bps");
-//        System.out.println("From Switch1 to Switch2 via Router1: " +
-//                getPathSpeed(switch1, router1, switch2) + " bps");
-
+        System.out.println("From Switch1 to Router1: " + getPathSpeed(switch1, router1) + " bps");
+        System.out.println("From Switch2 to Router1: " + getPathSpeed(switch2, router1) + " bps");
+        System.out.println("From Switch1 to Switch2 via Router1: " +
+                getPathSpeed(switch1, router1, switch2) + " bps");
     }
 
     public static String center(String model, int length) {
@@ -57,9 +56,23 @@ public class Main {
             res = new StringBuilder(" " + res + " ");
         }
 
-        if (res.length() != length) {   //if it is odd
+        if (res.length() != length) {
             return res.substring(1);
         }
         return res.toString();
+    }
+
+    public static long getPathSpeed(NetworkDevice... networkDevices) {
+        long lowest = Long.MAX_VALUE;
+        for (int i = 0; i < networkDevices.length - 1; i++) {
+            for (L2Port p : networkDevices[i].ports) {
+                for (L2Port p2 : networkDevices[i + 1].ports) {
+                    if (p.connectedTo == p2) {
+                        lowest = Math.min(lowest, Math.min(p.maxSpeed, p2.maxSpeed));
+                    }
+                }
+            }
+        }
+        return lowest;
     }
 }
