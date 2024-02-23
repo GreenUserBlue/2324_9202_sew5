@@ -20,9 +20,14 @@ class Graph {
     public void readGraphFromAdjacencyMatrixFile(Path path) throws IOException {
         List<String> lines = Files.readAllLines(path);
         String[] headers = lines.get(0).split(";");
+        if (lines.size()!=headers.length) throw new IllegalArgumentException("The number of rows and columns must be equal.");
         for (int i = 1; i < lines.size(); i++) {
             String[] parts = lines.get(i).split(";");
+            if (!headers[i].equals(parts[0]))
+                throw new IllegalArgumentException("The id from the first element of the row '" + parts[0] + "' and first column '" + headers[i] + "' are not equal for index '" + (i - 1) + "'.");
             Node node = findOrCreateNode(parts[0]);
+
+            if(headers.length!=parts.length) throw new IllegalArgumentException("The number ");
             for (int j = 1; j < parts.length; j++) {
                 if (!parts[j].isEmpty()) {
                     int distance = Integer.parseInt(parts[j]);
@@ -60,8 +65,8 @@ class Graph {
         queue.add(startNode);
 
         while (!queue.isEmpty()) {
-            Node currentNode = queue.poll(); // Node with the shortest distance
-            if (currentNode.isVisited()) continue; // Skip nodes already visited
+            Node currentNode = queue.poll();
+            if (currentNode.isVisited()) continue;
             currentNode.visit(queue);
         }
     }
@@ -123,14 +128,19 @@ class Graph {
     private String getPath(Node node) {
         List<String> path = new ArrayList<>();
         for (Node cur = node; cur.getPrevious() != null; cur = cur.getPrevious()) {
-            path.add( "--(" + cur.getDistance() + ")-> " + cur.getId());
+            path.add("--(" + cur.getDistance() + ")-> " + cur.getId());
         }
         Collections.reverse(path);
         return String.join(" ", path);
     }
 
     public static void main(String[] args) throws IOException {
-        Graph g = new Graph(Path.of("res/e_dijkstra/Graph_A-H.csv"));
+//        Graph g = new Graph(Path.of("res/e_dijkstra/Graph_A-H.csv"));
+//        Graph g = new Graph(Path.of("res/e_dijkstra/kaputt_Graph_A-H_a.csv"));
+//        Graph g = new Graph(Path.of("res/e_dijkstra/kaputt_Graph_A-H_b.csv"));
+//        Graph g = new Graph(Path.of("res/e_dijkstra/kaputt_Graph_A-H_c.csv"));
+        Graph g = new Graph(Path.of("res/e_dijkstra/kaputt_Graph_A-H_d.csv"));
+//        Graph g = new Graph(Path.of("res/e_dijkstra/Graph_12_with_names.csv"));
         System.out.println(g);
         System.out.println();
         System.out.println(g.getAllPaths());
@@ -143,7 +153,7 @@ class Graph {
         System.out.println();
 
 
-        g.calcWithDijkstra("D");
+        g.calcWithDijkstra("B");
         System.out.println(g);
         System.out.println();
         System.out.println(g.getAllPaths());
