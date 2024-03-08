@@ -5,18 +5,34 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
+/**
+ * @author Zwickelstorfer Felix
+ *
+ * This graph represents a mathematical graph with nodes and edges
+ */
 class Graph {
 
-    public Graph() {
-    }
 
-
+    /**
+     * reads the graph
+     * @param p the path of the graph
+     * @throws IOException if the file is not found
+     */
     public Graph(Path p) throws IOException {
         readGraphFromAdjacencyMatrixFile(p);
     }
 
+    /**
+     * all nodes inside the graph
+     */
     private final List<Node> nodes = new ArrayList<>();
 
+
+    /**
+     * reads the graph
+     * @param path the path of the file
+     * @throws IOException if the file is not found
+     */
     public void readGraphFromAdjacencyMatrixFile(Path path) throws IOException {
         List<String> lines = Files.readAllLines(path);
         String[] headers = lines.get(0).split(";");
@@ -39,6 +55,11 @@ class Graph {
         }
     }
 
+    /**
+     * finds or creates a node if it doesn't exist
+     * @param id the id of the node
+     * @return the found or created node
+     */
     private Node findOrCreateNode(String id) {
         Optional<Node> node = nodes.stream().filter(a -> Objects.equals(a.getId(), id)).findFirst();
         if (node.isPresent()) return node.get();
@@ -47,6 +68,10 @@ class Graph {
         return newNode;
     }
 
+    /**
+     * calculates the distance and path for each node from the startnode
+     * @param startNodeId the start node
+     */
     public void calcWithDijkstra(String startNodeId) {
 
         if (startNodeId == null) {
@@ -73,6 +98,11 @@ class Graph {
         }
     }
 
+    /**
+     * finds the node by the id
+     * @param id the id of the node
+     * @return the node or null if it doesn't exist
+     */
     private Node findNodeById(String id) {
         for (Node node : nodes) {
             if (node.getId().equals(id)) {
@@ -104,6 +134,9 @@ class Graph {
         return builder.toString();
     }
 
+    /**
+     * reads all paths from any to the startnode and returns them in a "beautiful" way
+     */
     public String getAllPaths() {
         Node startNode = nodes.stream().filter(Node::isFirst).findFirst().orElse(null);
         StringBuilder builder = new StringBuilder();
@@ -127,6 +160,11 @@ class Graph {
         return builder.toString();
     }
 
+    /**
+     * returns the path for a single node to get back to the start node
+     * @param node the node where to start from
+     * @return the path
+     */
     private String getPath(Node node) {
         List<String> path = new ArrayList<>();
         for (Node cur = node; cur.getPrevious() != null; cur = cur.getPrevious()) {
@@ -137,12 +175,13 @@ class Graph {
     }
 
     public static void main(String[] args) throws IOException {
-        Graph g = new Graph(Path.of("res/e_dijkstra/Graph_A-H.csv"));
+//        Graph g = new Graph(Path.of("res/e_dijkstra/Graph_A-H.csv"));
 //        Graph g = new Graph(Path.of("res/e_dijkstra/kaputt_Graph_A-H_a.csv"));
 //        Graph g = new Graph(Path.of("res/e_dijkstra/kaputt_Graph_A-H_b.csv"));
 //        Graph g = new Graph(Path.of("res/e_dijkstra/kaputt_Graph_A-H_c.csv"));
 //        Graph g = new Graph(Path.of("res/e_dijkstra/kaputt_Graph_A-H_d.csv"));
 //        Graph g = new Graph(Path.of("res/e_dijkstra/Graph_12_with_names.csv"));
+        Graph g = new Graph(Path.of("res/e_dijkstra/unzusammenhaengend_Graph_A-M.csv"));
         System.out.println(g);
         System.out.println();
         System.out.println(g.getAllPaths());
