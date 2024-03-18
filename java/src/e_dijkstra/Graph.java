@@ -79,7 +79,7 @@ class Graph {
         }
 
         for (Node node : nodes) {
-            node.reset();
+            node.init();
         }
 
         Node startNode = findNodeById(startNodeId);

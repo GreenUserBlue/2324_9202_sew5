@@ -75,7 +75,7 @@ class Node implements Comparable<Node> {
                 '}';
     }
 
-    public void reset() {
+    public void init() {
         isVisited = false;
         previous = null;
         distance = Integer.MAX_VALUE;
