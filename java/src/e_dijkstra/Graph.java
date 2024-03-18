@@ -88,7 +88,7 @@ class Graph {
         }
         startNode.setStartNode();
 
-        PriorityQueue<Node> queue = new PriorityQueue<>(Comparator.comparingInt(Node::getDistance));
+        PriorityQueue<Node> queue = new PriorityQueue<>(Node::compareTo);
         queue.add(startNode);
 
         while (!queue.isEmpty()) {
@@ -175,13 +175,13 @@ class Graph {
     }
 
     public static void main(String[] args) throws IOException {
-//        Graph g = new Graph(Path.of("res/e_dijkstra/Graph_A-H.csv"));
+        Graph g = new Graph(Path.of("res/e_dijkstra/Graph_A-H.csv"));
 //        Graph g = new Graph(Path.of("res/e_dijkstra/kaputt_Graph_A-H_a.csv"));
 //        Graph g = new Graph(Path.of("res/e_dijkstra/kaputt_Graph_A-H_b.csv"));
 //        Graph g = new Graph(Path.of("res/e_dijkstra/kaputt_Graph_A-H_c.csv"));
 //        Graph g = new Graph(Path.of("res/e_dijkstra/kaputt_Graph_A-H_d.csv"));
 //        Graph g = new Graph(Path.of("res/e_dijkstra/Graph_12_with_names.csv"));
-        Graph g = new Graph(Path.of("res/e_dijkstra/unzusammenhaengend_Graph_A-M.csv"));
+//        Graph g = new Graph(Path.of("res/e_dijkstra/unzusammenhaengend_Graph_A-M.csv"));
         System.out.println(g);
         System.out.println();
         System.out.println(g.getAllPaths());

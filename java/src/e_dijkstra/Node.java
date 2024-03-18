@@ -3,6 +3,7 @@ package e_dijkstra;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 
@@ -26,6 +27,7 @@ class Node implements Comparable<Node> {
      * all edges the nodes has to other elements
      */
     private final List<Edge> edges = new ArrayList<>();
+//    private final TreeSet<Edge> edges = new TreeSet<>();
 
     /**
      * the current distance the node has to the start node
