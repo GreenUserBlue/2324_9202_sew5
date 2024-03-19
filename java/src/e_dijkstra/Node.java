@@ -3,13 +3,12 @@ package e_dijkstra;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 
 /**
  * @author Zwickelstorfer Felix
- *
+ * <p>
  * represents a mathematical node
  */
 class Node implements Comparable<Node> {
@@ -90,6 +89,7 @@ class Node implements Comparable<Node> {
 
     /**
      * handles what should happen when the node is visited
+     *
      * @param queue the queue with the next ndoes to visit
      */
     public void visit(PriorityQueue<Node> queue) {
@@ -98,6 +98,7 @@ class Node implements Comparable<Node> {
             Node neighbour = edge.getNeighbour();
             int newDist = distance + edge.getDistance();
             if (newDist < neighbour.distance) {
+                if (edge.getDistance() == Integer.MAX_VALUE) queue.remove(edge.getNeighbour());
                 neighbour.distance = newDist;
                 neighbour.previous = this;
                 queue.add(edge.getNeighbour());
