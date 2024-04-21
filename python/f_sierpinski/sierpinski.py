@@ -2,6 +2,7 @@ import argparse
 import os
 from logging.handlers import RotatingFileHandler
 
+import matplotlib.axis
 import matplotlib.pyplot as plt
 import logging
 
@@ -11,10 +12,11 @@ import logging
 # Parameter for console:
 # -s 800 600 -f myfile.png -r 8 -t green -n blue -a -S 14 -b orange
 
-def setup_logger(logLevel="INFO"):
+def setup_logger(logLevel: str = "INFO") -> None:
     """ creates the logger """
     global logger
-    logging.basicConfig(level=getattr(logging,logLevel), format='[%(asctime)s] %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S')
+    logging.basicConfig(level=getattr(logging, logLevel), format='[%(asctime)s] %(levelname)s %(message)s',
+                        datefmt='%Y-%m-%d %H:%M:%S')
     logger = logging.getLogger('my_logger')
     if not os.path.exists("./log/"):
         os.makedirs("./log/")
@@ -28,7 +30,7 @@ def setup_logger(logLevel="INFO"):
     logger.info("Logging turned on " + str(logger.level))
 
 
-def get_arg_parse():
+def get_arg_parse() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--file", "-f", required=True)
     parser.add_argument("--size", "-s", type=float, nargs=2, required=True)
@@ -52,7 +54,7 @@ def get_arg_parse():
     return parser.parse_args()
 
 
-def check_smallest_size(points, minLength):
+def check_smallest_size(points: list[tuple[float, float]], minLength: float) -> bool:
     minLength = minLength * minLength
     for p in range(len(points)):
         x = points[(p + 1) % len(points)][0] - points[p][0]
@@ -61,7 +63,7 @@ def check_smallest_size(points, minLength):
     return True
 
 
-def mid_points(points):
+def mid_points(points: list[tuple[float, float]]) -> list[tuple[float, float]]:
     new_points = []
     for p in range(len(points)):
         x = points[(p + 1) % len(points)][0] + points[p][0]
@@ -70,7 +72,7 @@ def mid_points(points):
     return new_points
 
 
-def draw_triangles(args, points, counter=0):
+def draw_triangles(args: argparse.Namespace, points: list[tuple[float, float]], counter: int = 0) -> None:
     if args.recursionDepth:
         if args.recursionDepth <= counter:
             return
@@ -86,20 +88,8 @@ def draw_triangles(args, points, counter=0):
     draw_triangles(args, [points[2], mids[1], mids[2]], counter + 1)
 
 
-def show_plot(args):
-    # plt.figure(figsize=(args.size[0] / 100, args.size[1] / 100))
-    # fig, ax = plt.gcf(), plt.gca()
-    fig, ax = plt.subplots(figsize=(args.size[0] / 100, args.size[1] / 100))  # pixel to matplotlib format
-    points = [args.point1, args.point2, args.point3]
-    draw_triangles(args, points)
-    logger.info("Finished drawing Triangle")
-    fig.set_facecolor(args.backgroundColor)
-    ax.set_facecolor(args.backgroundColor)
-
-    plt.title("Felix Zwickelstorfer", color=args.nameColor, horizontalalignment="right", verticalalignment="bottom",
-              fontsize=args.nameSize, x=1)  # at the top right
-    # plt.title("Felix Zwickelstorfer", color=args.nameColor, horizontalalignment="right", verticalalignment="top", fontsize=args.nameSize, x=1, y=0, pad=-20)  # at the bottom right
-    if args.hideAxes:
+def set_axis(hide: bool, ax: matplotlib.axis, points: list[tuple[float, float]]) -> None:
+    if hide:
         # plt.axis('off')
         ax.set_axis_off()  # both work, but this one specifies which subplot as well
         logger.debug("Finished hiding axis")
@@ -116,6 +106,22 @@ def show_plot(args):
     yRange = [min([i[1] for i in points]), max([i[1] for i in points])]
     ax.set_ylim(yRange)
     logger.debug("Finished setting the range of the Graph to the possible maximum")
+
+
+def show_plot(args: argparse.Namespace) -> None:
+    # plt.figure(figsize=(args.size[0] / 100, args.size[1] / 100))
+    # fig, ax = plt.gcf(), plt.gca()
+    fig, ax = plt.subplots(figsize=(args.size[0] / 100, args.size[1] / 100))  # pixel to matplotlib format
+    points = [args.point1, args.point2, args.point3]
+    draw_triangles(args, points)
+    logger.info("Finished drawing Triangle")
+    fig.set_facecolor(args.backgroundColor)
+    ax.set_facecolor(args.backgroundColor)
+
+    plt.title("Felix Zwickelstorfer", color=args.nameColor, horizontalalignment="right", verticalalignment="bottom",
+              fontsize=args.nameSize, x=1)  # at the top right
+    # plt.title("Felix Zwickelstorfer", color=args.nameColor, horizontalalignment="right", verticalalignment="top", fontsize=args.nameSize, x=1, y=0, pad=-20)  # at the bottom right
+    set_axis(args.hideAxes, ax, points)
 
     ax.set_aspect('equal')
     fig.tight_layout()
