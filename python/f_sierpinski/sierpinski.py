@@ -10,7 +10,7 @@ import logging
 # matplotlib.use("QtAgg") 'TKAgg','GTKAgg','Qt4Agg','WXAgg', alle Möglichkeiten
 
 # Parameter for console:
-# -s 800 600 -f myfile.png -r 8 -t green -n blue -a -S 14 -b orange
+# -s 800 600 -f myFile.png -r 8 -t green -n blue -a -S 14 -b orange
 
 def setup_logger(logLevel: str = "INFO") -> None:
     """ creates the logger """
@@ -20,14 +20,14 @@ def setup_logger(logLevel: str = "INFO") -> None:
     logger = logging.getLogger('my_logger')
     if not os.path.exists("./log/"):
         os.makedirs("./log/")
-    file_handler = RotatingFileHandler("./log/sierpinkski.log", maxBytes=10000, backupCount=5)
+    file_handler = RotatingFileHandler("./log/sierpinski.log", maxBytes=10000, backupCount=5)
     file_handler.setFormatter(logging.Formatter('[%(asctime)s] %(levelname)s %(message)s', datefmt='%Y-%m-%d %H:%M:%S'))
     # stream_handler = logging.StreamHandler()
     # stream_formatter = logging.Formatter('%(levelname)s - %(message)s')
     # stream_handler.setFormatter(stream_formatter)
     logger.addHandler(file_handler)
     # logger.addHandler(stream_handler)
-    logger.info("Logging turned on " + str(logger.level))
+    logger.info("Logging turned on " + str(logLevel))
 
 
 def get_arg_parse() -> argparse.Namespace:
@@ -54,12 +54,14 @@ def get_arg_parse() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def check_smallest_size(points: list[tuple[float, float]], minLength: float) -> bool:
-    minLength = minLength * minLength
+def check_smallest_size(points: list[tuple[float, float]], min_length: float) -> bool:
+    """checks if any of the lengths is too short, and does this with the Pythagoras"""
+    min_length_squared = min_length * min_length
     for p in range(len(points)):
         x = points[(p + 1) % len(points)][0] - points[p][0]
         y = points[(p + 1) % len(points)][1] - points[p][1]
-        if x * x + y * y < minLength: return False
+        if x * x + y * y < min_length_squared:
+            return False
     return True
 
 
@@ -81,11 +83,11 @@ def draw_triangles(args: argparse.Namespace, points: list[tuple[float, float]], 
     global logger
     plt.plot([points[0][0], points[1][0], points[2][0], points[0][0]],
              [points[0][1], points[1][1], points[2][1], points[0][1]], color=args.triangleColor)
-    logger.debug("Drawed points: " + str(points))
-    mids = mid_points(points)
-    draw_triangles(args, [points[0], mids[0], mids[2]], counter + 1)
-    draw_triangles(args, [points[1], mids[0], mids[1]], counter + 1)
-    draw_triangles(args, [points[2], mids[1], mids[2]], counter + 1)
+    logger.debug("Drew points: " + str(points))
+    middle_points = mid_points(points)
+    draw_triangles(args, [points[0], middle_points[0], middle_points[2]], counter + 1)
+    draw_triangles(args, [points[1], middle_points[0], middle_points[1]], counter + 1)
+    draw_triangles(args, [points[2], middle_points[1], middle_points[2]], counter + 1)
 
 
 def set_axis(hide: bool, ax: matplotlib.axis, points: list[tuple[float, float]]) -> None:
@@ -95,10 +97,10 @@ def set_axis(hide: bool, ax: matplotlib.axis, points: list[tuple[float, float]])
         logger.debug("Finished hiding axis")
         pass
     else:
-        ax.tick_params(colors=args.nameColor)
-        [t.set_color(args.nameColor) for t in ax.xaxis.get_ticklabels()]
-        [t.set_color(args.nameColor) for t in ax.yaxis.get_ticklabels()]
-        [ax.spines[t].set_color(args.nameColor) for t in ax.spines]
+        ax.tick_params(colors=arg_namespace.nameColor)
+        [t.set_color(arg_namespace.nameColor) for t in ax.xaxis.get_ticklabels()]
+        [t.set_color(arg_namespace.nameColor) for t in ax.yaxis.get_ticklabels()]
+        [ax.spines[t].set_color(arg_namespace.nameColor) for t in ax.spines]
         logger.debug("Finished updating axis descriptions")
 
     # print([i[0] for i in points])
@@ -118,9 +120,9 @@ def show_plot(args: argparse.Namespace) -> None:
     fig.set_facecolor(args.backgroundColor)
     ax.set_facecolor(args.backgroundColor)
 
-    plt.title("Felix Zwickelstorfer", color=args.nameColor, horizontalalignment="right", verticalalignment="bottom",
+    plt.title("Felix Zwickelstorfer", color=args.nameColor, ha="right", va="bottom",
               fontsize=args.nameSize, x=1)  # at the top right
-    # plt.title("Felix Zwickelstorfer", color=args.nameColor, horizontalalignment="right", verticalalignment="top", fontsize=args.nameSize, x=1, y=0, pad=-20)  # at the bottom right
+    # plt.title("Felix Zwickelstorfer", color=args.nameColor, ha="right", va="top", fontsize=args.nameSize, x=1, y=0, pad=-20)  # at the bottom right
     set_axis(args.hideAxes, ax, points)
 
     ax.set_aspect('equal')
@@ -130,15 +132,15 @@ def show_plot(args: argparse.Namespace) -> None:
 
 
 if __name__ == "__main__":
-    args = get_arg_parse()
+    arg_namespace = get_arg_parse()
     try:
-        if args.verbose:
+        if arg_namespace.verbose:
             setup_logger("DEBUG")
-        elif args.quiet:
+        elif arg_namespace.quiet:
             setup_logger("WARNING")
         else:
             setup_logger()
-        show_plot(args)
+        show_plot(arg_namespace)
     except Exception as e:
         global logger
         logger.error(e)
