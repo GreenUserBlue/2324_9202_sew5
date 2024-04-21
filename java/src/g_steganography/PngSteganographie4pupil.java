@@ -114,7 +114,8 @@ public class PngSteganographie4pupil {
 //        data = (data & mask);
 //        data |= (replaceable << position);
 //        return data;
-//        it is the same, however this is in one line
+
+//        it is the same as above, however this is in one line
         return (data & (~(1 << position))) | (replaceable << position);
     }
 
