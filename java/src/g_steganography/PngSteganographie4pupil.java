@@ -110,10 +110,12 @@ public class PngSteganographie4pupil {
     }
 
     public static int replaceAt(int data, int replaceable, int position) {
-        int mask = (~(1 << position));
-        data = (data & mask);
-        data |= (replaceable << position);
-        return data;
+//        int mask = (~(1 << position));
+//        data = (data & mask);
+//        data |= (replaceable << position);
+//        return data;
+//        it is the same, however this is in one line
+        return (data & (~(1 << position))) | (replaceable << position);
     }
 
     /**

@@ -1,26 +1,26 @@
 import argparse
 
-
-# Dateiname für das abzuspeichernde Bild
-# Bildgröße z.B. 800x600 (Länge/Breite)
-# Koordinate des ersten Dreieckspunktes (Default = links oben)
-# Koordinate des zweiten Dreieckspunktes (Default = links unten)
-# Koordinate des dritten Dreieckspunktes (Default = rechts mittig)
-# minimale Seitenlänge (in Pixel) oder Rekursionstiefe. Diese beiden Werte sollen sich als Argument gegenseitg
-# ausschließen
-# logging (verbose oder quiet)
-# Farbe des Dreiecks
-# Farbe des Hintergrundes
-# Farbe des Textes
-# Achsen ausblenden
-
 def getArgParse():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--file", "-f")
+    parser.add_argument("--file", "-f", required=True)
     parser.add_argument("--size", "-s", type=float, nargs=2, required=True)
-    parser.add_argument("--point1", "-p1", type=float, nargs=2, default=[800.0, 600.0])
-    parser.add_argument("--point2", "-p2", type=float, nargs=2, default=[800.0, 600.0])
-    parser.add_argument("--point3", "-p3", type=float, nargs=2, default=[800.0, 600.0])
+    parser.add_argument("--point1", "-p1", type=float, nargs=2, default=[2.0, 8.0])
+    parser.add_argument("--point2", "-p2", type=float, nargs=2, default=[2.0, 2.0])
+    parser.add_argument("--point3", "-p3", type=float, nargs=2, default=[6.0, 4.0])
+    parser.add_argument("--nameSize", "-S", type=float, default=12.0)
+    group = parser.add_mutually_exclusive_group()
+
+    group.add_argument("--verbose", "-v", action="store_true")
+    group.add_argument("--quiet", "-q", action="store_true")
+
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument("--minLength", "-L", type=float)
+    group.add_argument("--recursionDepth", "-r", type=int)
+
+    group.add_argument("--triangleColor", "-t", default="black")
+    group.add_argument("--backgroundColor", "-b", default="white")
+    group.add_argument("--nameColor", "-n", default="black")
+    group.add_argument("--hideAxes", "-a", action="store_true")
     return parser.parse_args()
 
 
