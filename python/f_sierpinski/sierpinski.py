@@ -1,10 +1,11 @@
-from turtle import color
 import argparse
-import matplotlib
 import matplotlib.pyplot as plt
 
 
-# matplotlib.use("QtAgg")
+# matplotlib.use("QtAgg") 'TKAgg','GTKAgg','Qt4Agg','WXAgg', alle Möglichkeiten
+
+# Parameter for console:
+# -s 800 600 -f myfile.png -r 8 -t green -n blue -a -S 14 -b orange
 
 def getArgParse():
     parser = argparse.ArgumentParser()
@@ -12,7 +13,7 @@ def getArgParse():
     parser.add_argument("--size", "-s", type=float, nargs=2, required=True)
     parser.add_argument("--point1", "-p1", type=float, nargs=2, default=[2.0, 8.0])
     parser.add_argument("--point2", "-p2", type=float, nargs=2, default=[2.0, 2.0])
-    parser.add_argument("--point3", "-p3", type=float, nargs=2, default=[6.0, 4.0])
+    parser.add_argument("--point3", "-p3", type=float, nargs=2, default=[8.0, 5.0])
     parser.add_argument("--nameSize", "-S", type=float, default=12.0)
     group = parser.add_mutually_exclusive_group()
 
@@ -54,8 +55,10 @@ def draw_triangles(args, points, counter=0):
             return
     elif not check_smallest_size(points, args.minLength):
         return
+    # print(points)
     plt.plot([points[0][0], points[1][0], points[2][0], points[0][0]],
              [points[0][1], points[1][1], points[2][1], points[0][1]], color=args.triangleColor)
+    # plt.plot([-2, 2, 6], [28, 2, 4], color=args.triangleColor)
     mids = mid_points(points)
     draw_triangles(args, [points[0], mids[0], mids[2]], counter + 1)
     draw_triangles(args, [points[1], mids[0], mids[1]], counter + 1)
@@ -63,10 +66,34 @@ def draw_triangles(args, points, counter=0):
 
 
 def showPlot(args):
-    plt.figure(figsize=tuple(args.size))
-    draw_triangles(args, [args.point1, args.point2, args.point3])
-    # plt.imsave(args.file)
-    plt.show()
+    # plt.figure(figsize=(args.size[0] / 100, args.size[1] / 100))
+    # fig, ax = plt.gcf(), plt.gca()
+    fig, ax = plt.subplots(figsize=(args.size[0] / 100, args.size[1] / 100))  # pixel to matplotlib format
+    points = [args.point1, args.point2, args.point3]
+    draw_triangles(args, points)
+    fig.set_facecolor(args.backgroundColor)
+    ax.set_facecolor(args.backgroundColor)
+
+    plt.title("Felix Zwickelstorfer", color=args.nameColor, horizontalalignment="right", verticalalignment="bottom", fontsize=args.nameSize, x=1)  # at the top right
+    # plt.title("Felix Zwickelstorfer", color=args.nameColor, horizontalalignment="right", verticalalignment="top", fontsize=args.nameSize, x=1, y=0, pad=-20)  # at the bottom right
+    if args.hideAxes:
+        # plt.axis('off')
+        ax.set_axis_off()  # both work, but this one specifies which subplot as well
+        pass
+    else:
+        ax.tick_params(colors=args.nameColor)
+        [t.set_color(args.nameColor) for t in ax.xaxis.get_ticklabels()]
+        [t.set_color(args.nameColor) for t in ax.yaxis.get_ticklabels()]
+        [ax.spines[t].set_color(args.nameColor) for t in ax.spines]
+    # print([i[0] for i in points])
+    ax.set_xlim([min([i[0] for i in points]), max([i[0] for i in points])])
+    yRange = [min([i[1] for i in points]), max([i[1] for i in points])]
+    ax.set_ylim(yRange)
+
+    ax.set_aspect('equal')
+    fig.tight_layout()
+    # plt.show()
+    plt.savefig(args.file)
 
 
 if __name__ == "__main__":
