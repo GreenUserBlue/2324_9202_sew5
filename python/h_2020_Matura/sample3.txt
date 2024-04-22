@@ -1,0 +1,22 @@
+
+# oberster Block
+title=PSP Version 2
+fontsize=20
+# Breite des Bildes
+width=0
+# header
+header-color=#a7a9ad
+
+Planung
+    OSP
+    PSP
+    MS: Planung abgeschlossen
+Phase 2
+    action
+    ein ganz langer Text der die Breite vorgibt
+Durchführung
+    Programmieren
+    Testen
+    Abnahme
+    MS: Alles Fertig
+
