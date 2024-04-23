@@ -1,0 +1,17 @@
+
+# oberster Block
+title=PSP Version 2
+fontsize=12
+# Breite des Bildes
+width=500
+
+Planung
+    OSP
+    PSP
+    MS: Planung abgeschlossen
+Durchführung
+    Programmieren
+    Testen
+    Abnahme
+    MS: Alles Fertig
+
