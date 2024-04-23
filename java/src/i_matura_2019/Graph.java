@@ -303,7 +303,6 @@ public class Graph implements IChangeDistance {
         int width = map.get(0).length();
         int height = map.size();
         List<Node> nodes = new ArrayList<>();
-
         for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 if (map.get(i).charAt(j) != '#') nodes.add(new Node(getNodeID(map.get(i).charAt(j), j, i)));
@@ -314,10 +313,7 @@ public class Graph implements IChangeDistance {
                 addNeighbor(nodes, getNodeID(map.get(i).charAt(j), j, i), map, i, j);
             }
         }
-
         this.nodes = nodes;
-
-//        System.out.println(nodes.stream().map(it->it.getId()).collect(Collectors.joining(",  ","","")));
     }
 
     private void addNeighbor(List<Node> nodes, String myId, List<String> map, int i, int j) {

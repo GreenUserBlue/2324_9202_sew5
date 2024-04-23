@@ -7,8 +7,7 @@ def get_surrounding_pos(pos: Tuple[int, int]) -> List[Tuple[int, int]]:
     return [(pos[0] + 1, pos[1]), (pos[0] - 1, pos[1]), (pos[0], pos[1] + 1), (pos[0], pos[1] - 1)]
 
 
-def get_data(data: List[str]) -> Tuple[
-    Set[Tuple[int, int]], Set[Tuple[int, int]], Set[Tuple[int, int]], Tuple[int, int]]:
+def get_data(data: List[str]) -> Tuple[Set[Tuple[int, int]], Set[Tuple[int, int]], Set[Tuple[int, int]], Tuple[int, int]]:
     robots, rechargers, emtpy_spaces, targets = set(), set(), set(), set()
 
     for i in range(len(data)):
@@ -31,7 +30,7 @@ def get_data(data: List[str]) -> Tuple[
 
 
 # ------------------------------------------
-# ------------------------------------------ The follwing solution is deapth-first search, which is, even though it is optimised, too slow for room_3.txt
+# ------------------------------------------ The following solution is depth-first search, which is, even though it is optimised, too slow for room_3.txt
 # ------------------------------------------
 
 # def solve_single_robot(r, open_targets, emtpy_spaces, path: List = None, best_path_len=-1):
@@ -63,7 +62,7 @@ def get_data(data: List[str]) -> Tuple[
 #         return []
 #     return path
 
-def solve_single_robot(r: Tuple[int, int], open_targets: List[Tuple[int, int]], emtpy_spaces: List[Tuple[int, int]]) -> \
+def solve_single_robot(r: Tuple[int, int], open_targets: Set[Tuple[int, int]], emtpy_spaces: Set[Tuple[int, int]]) -> \
         List[Tuple[int, int]]:
     logger = logging.getLogger("wegsuche")
     if r in open_targets:
@@ -131,14 +130,13 @@ def setup_logger(args: argparse.Namespace) -> None:
                         # format='[%(asctime)s] %(levelname)s %(message)s',
                         format='%(levelname)s:%(name)s:%(message)s',
                         filename="paths.log")
-    logger = logging.getLogger("wegsuche")
 
 
 if __name__ == "__main__":
-    args = parse_args()
-    setup_logger(args)
+    arguments = parse_args()
+    setup_logger(arguments)
     try:
-        compute_file(args.filename)
+        compute_file(arguments.filename)
     except Exception as e:
-        logger = logging.getLogger("wegsuche")
-        logger.error(e)
+        logger_error = logging.getLogger("wegsuche")
+        logger_error.error(e)
