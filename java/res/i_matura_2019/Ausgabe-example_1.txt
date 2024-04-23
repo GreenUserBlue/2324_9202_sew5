@@ -1,0 +1,70 @@
+loaded map: example_1.map
+
+
+print all paths:
+no path available for A:1/1 [totalDistance: ?] t:1/2:1
+no path available for R:3/1 [totalDistance: ?] t:3/2:0, t:4/1:0
+no path available for t:4/1 [totalDistance: ?] R:3/1:0, t:4/2:1, t:5/1:1
+no path available for t:5/1 [totalDistance: ?] t:4/1:1, t:5/2:1
+no path available for t:1/2 [totalDistance: ?] A:1/1:1, t:1/3:1, t:2/2:1
+no path available for t:2/2 [totalDistance: ?] t:1/2:1, t:2/3:1, t:3/2:1
+no path available for t:3/2 [totalDistance: ?] R:3/1:0, t:2/2:1, t:3/3:1, t:4/2:1
+no path available for t:4/2 [totalDistance: ?] t:3/2:1, t:4/1:1, t:4/3:1, t:5/2:1
+no path available for t:5/2 [totalDistance: ?] t:4/2:1, t:5/1:1, t:5/3:1
+no path available for t:1/3 [totalDistance: ?] R:1/4:0, t:1/2:1, t:2/3:1
+no path available for t:2/3 [totalDistance: ?] t:1/3:1, t:2/2:1, t:3/3:1
+no path available for t:3/3 [totalDistance: ?] t:2/3:1, t:3/2:1, t:3/4:1, t:4/3:1
+no path available for t:4/3 [totalDistance: ?] t:3/3:1, t:4/2:1, t:4/4:1, t:5/3:1
+no path available for t:5/3 [totalDistance: ?] t:4/3:1, t:5/2:1, t:5/4:1
+no path available for R:1/4 [totalDistance: ?] t:1/3:0
+no path available for t:3/4 [totalDistance: ?] t:3/3:1, t:4/4:1
+no path available for t:4/4 [totalDistance: ?] t:3/4:1, t:4/3:1, t:5/4:1
+no path available for t:5/4 [totalDistance: ?] t:4/4:1, t:5/3:1
+
+print graph:
+A:1/1 [totalDistance: ?] t:1/2:1
+R:3/1 [totalDistance: ?] t:3/2:0, t:4/1:0
+t:4/1 [totalDistance: ?] R:3/1:0, t:4/2:1, t:5/1:1
+t:5/1 [totalDistance: ?] t:4/1:1, t:5/2:1
+t:1/2 [totalDistance: ?] A:1/1:1, t:1/3:1, t:2/2:1
+t:2/2 [totalDistance: ?] t:1/2:1, t:2/3:1, t:3/2:1
+t:3/2 [totalDistance: ?] R:3/1:0, t:2/2:1, t:3/3:1, t:4/2:1
+t:4/2 [totalDistance: ?] t:3/2:1, t:4/1:1, t:4/3:1, t:5/2:1
+t:5/2 [totalDistance: ?] t:4/2:1, t:5/1:1, t:5/3:1
+t:1/3 [totalDistance: ?] R:1/4:0, t:1/2:1, t:2/3:1
+t:2/3 [totalDistance: ?] t:1/3:1, t:2/2:1, t:3/3:1
+t:3/3 [totalDistance: ?] t:2/3:1, t:3/2:1, t:3/4:1, t:4/3:1
+t:4/3 [totalDistance: ?] t:3/3:1, t:4/2:1, t:4/4:1, t:5/3:1
+t:5/3 [totalDistance: ?] t:4/3:1, t:5/2:1, t:5/4:1
+R:1/4 [totalDistance: ?] t:1/3:0
+t:3/4 [totalDistance: ?] t:3/3:1, t:4/4:1
+t:4/4 [totalDistance: ?] t:3/4:1, t:4/3:1, t:5/4:1
+t:5/4 [totalDistance: ?] t:4/4:1, t:5/3:1
+
+
+--------------------------------------------------------------------------------------
+
+calc for AWAB A:1/1
+
+A:1/1: is start node
+A:1/1 --(1)-> t:1/2 --(2)-> t:2/2 --(3)-> t:3/2 --(3)-> R:3/1
+A:1/1 --(1)-> t:1/2 --(2)-> t:2/2 --(3)-> t:3/2 --(3)-> R:3/1 --(3)-> t:4/1
+A:1/1 --(1)-> t:1/2 --(2)-> t:2/2 --(3)-> t:3/2 --(3)-> R:3/1 --(3)-> t:4/1 --(4)-> t:5/1
+A:1/1 --(1)-> t:1/2
+A:1/1 --(1)-> t:1/2 --(2)-> t:2/2
+A:1/1 --(1)-> t:1/2 --(2)-> t:2/2 --(3)-> t:3/2
+A:1/1 --(1)-> t:1/2 --(2)-> t:2/2 --(3)-> t:3/2 --(4)-> t:4/2
+A:1/1 --(1)-> t:1/2 --(2)-> t:2/2 --(3)-> t:3/2 --(3)-> R:3/1 --(3)-> t:4/1 --(4)-> t:5/1 --(5)-> t:5/2
+A:1/1 --(1)-> t:1/2 --(2)-> t:1/3
+A:1/1 --(1)-> t:1/2 --(2)-> t:1/3 --(3)-> t:2/3
+A:1/1 --(1)-> t:1/2 --(2)-> t:2/2 --(3)-> t:3/2 --(4)-> t:3/3
+A:1/1 --(1)-> t:1/2 --(2)-> t:2/2 --(3)-> t:3/2 --(4)-> t:3/3 --(5)-> t:4/3
+A:1/1 --(1)-> t:1/2 --(2)-> t:2/2 --(3)-> t:3/2 --(3)-> R:3/1 --(3)-> t:4/1 --(4)-> t:5/1 --(5)-> t:5/2 --(6)-> t:5/3
+A:1/1 --(1)-> t:1/2 --(2)-> t:1/3 --(2)-> R:1/4
+A:1/1 --(1)-> t:1/2 --(2)-> t:2/2 --(3)-> t:3/2 --(4)-> t:3/3 --(5)-> t:3/4
+A:1/1 --(1)-> t:1/2 --(2)-> t:2/2 --(3)-> t:3/2 --(4)-> t:3/3 --(5)-> t:3/4 --(6)-> t:4/4
+A:1/1 --(1)-> t:1/2 --(2)-> t:2/2 --(3)-> t:3/2 --(4)-> t:3/3 --(5)-> t:3/4 --(6)-> t:4/4 --(7)-> t:5/4
+
+AWAB A:1/1 drives to the recharge station: R:1/4
+the path to the recharge station is: A:1/1 --(1)-> t:1/2 --(2)-> t:1/3 --(2)-> R:1/4
+
