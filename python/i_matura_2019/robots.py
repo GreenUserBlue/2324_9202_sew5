@@ -1,3 +1,7 @@
+import argparse
+import logging
+
+
 def search():
     pass
 
@@ -26,6 +30,7 @@ def get_data(data: list[str]):
                 targets.add(j)
 
     return robots, targets, emtpy_spaces, (len(data), len(data[0]))
+
 
 # ------------------------------------------
 # ------------------------------------------ The follwing solution is deapth-first search, which is, even though it is optimised, too slow for room_3.txt
@@ -57,17 +62,20 @@ def get_data(data: list[str]):
 # def solve_robot(r, open_targets, emtpy_spaces):
 #     path = solve_single_robot(r, open_targets, emtpy_spaces)
 #     if path == -1:
-#         print("empty")
 #         return []
 #     return path
 
 def solve_single_robot(r, open_targets, emtpy_spaces):
+    logger = logging.getLogger("wegsuche")
     if r in open_targets:
+        logger.debug("found solution after 0 states, len: 1")
+        logger.info("solution: " + str(r) + " -> " + str([r]))
         return []
     paths = []
     next_paths = [[r]]
-
+    counter = 1
     while paths != next_paths:
+        logger.debug("front: 1")
         paths = next_paths
         next_paths = []
         for path in paths:
@@ -75,20 +83,27 @@ def solve_single_robot(r, open_targets, emtpy_spaces):
             direct_targets = [i for i in next_gen if i in open_targets]
             if len(direct_targets) > 0:
                 path.append(direct_targets[0])
+                logger.debug("found solution after " + str(counter) + " states, len: " + str(len(path)))
+                logger.info("solution: "+str(r)+" -> "+str(path))
                 return path
             for i in next_gen:
                 new_path = path.copy()
                 new_path.append(i)
                 next_paths.append(new_path)
                 emtpy_spaces.discard(i)
+        counter += 1
+    logger.critical("solution: no solution was found")
     return []
 
 
-
 def compute_file(path: str):
+    logger = logging.getLogger("wegsuche")
+    logger.info("Reading " + str(path))
     with open(path) as f:
         robots, open_targets, emtpy_spaces, size = get_data(f.readlines())
+        logger.info("goals: " + str(open_targets))
         for r in robots:
+            logger.info("solve for " + str(r))
             path = solve_single_robot(r, open_targets.copy(), emtpy_spaces.copy())
             if len(path) > 0:
                 emtpy_spaces.remove(path[-1])
@@ -96,7 +111,35 @@ def compute_file(path: str):
                 emtpy_spaces.add(r)
             else:
                 open_targets.discard(r)
-            print(path)
 
 
-compute_file("./room_3.txt")
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("filename", help="name of the input file")
+    group = parser.add_mutually_exclusive_group(required=False)
+    group.add_argument("--verbose", "-v", help="sets verbose logging", action="store_true")
+    group.add_argument("--quiet", "-q", help="sets quiet logging", action="store_true")
+    return parser.parse_args()
+
+
+def setup_logger(args):
+    log_level = logging.INFO
+    if args.verbose:
+        log_level = logging.DEBUG
+    elif args.quiet:
+        log_level = logging.CRITICAL
+    logging.basicConfig(level=log_level, datefmt='%Y-%m-%d %H:%M:%S',
+                        # format='[%(asctime)s] %(levelname)s %(message)s',
+                        format='%(levelname)s:%(name)s:%(message)s',
+                        filename="paths.log")
+    logger = logging.getLogger("wegsuche")
+
+
+if __name__ == "__main__":
+    args = parse_args()
+    setup_logger(args)
+    try:
+        compute_file(args.filename)
+    except Exception as e:
+        logger = logging.getLogger("wegsuche")
+        logger.error(e)
