@@ -110,13 +110,13 @@ public class PngSteganographie4pupil {
     }
 
     public static int replaceAt(int data, int replaceable, int position) {
-//        int mask = (~(1 << position));
-//        data = (data & mask);
-//        data |= (replaceable << position);
-//        return data;
+        int mask = (~(1 << position));
+        data = (data & mask);
+        data |= (replaceable << position);
+        return data;
 
 //        it is the same as above, however this is in one line
-        return (data & (~(1 << position))) | (replaceable << position);
+//        return (data & (~(1 << position))) | (replaceable << position);
     }
 
     /**
@@ -132,7 +132,7 @@ public class PngSteganographie4pupil {
         int images = img.getRGB(pixelPos % img.getWidth(), pixelPos / img.getWidth());
         byte nibble = 0;
         for (int j = 0; j < 4; j++) {
-            nibble |= (((images >> (j * 8)) & 1) << j);
+            nibble |=(((images >> (j * 8)) & 1) << j);
         }
         return nibble;
     }
