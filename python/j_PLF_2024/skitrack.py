@@ -7,14 +7,15 @@ import logging
 import numpy
 import regex as re
 
+"""
+>>> python skitrack.py --out ski_filtered.csv --tal 999 -s 1000 ski.gpx
+>>> python skitrack.py --verbose --marker --out ski1.png --tal 1500 ski.gpx
+>>> python skitrack.py --quiet --out ski2.png --tal 1500 ski.gpx
+"""
 
-# Tests:
-# python skitrack.py --out ski_filtered.csv --tal 999 -s 1000 ski.gpx
-# python skitrack.py --verbose --marker --out ski1.png --tal 1500 ski.gpx
-# python skitrack.py --quiet --out ski2.png --tal 1500 ski.gpx
-#
 
 def get_args() -> argparse.Namespace:
+    """parses all arguments"""
     parser = argparse.ArgumentParser()
     parser.add_argument("infile", help="Input-Datei (z.B. ski.gpx oder ski.csv)")
     parser.add_argument("-o", "--out", help="Zu generierende Datei, z.B. ski_new.csv oder ski.png", required=True)
@@ -33,6 +34,7 @@ def get_args() -> argparse.Namespace:
 
 
 def read_csv(path: str) -> list[tuple[str, tuple[float, float], float]]:
+    """reads the csv file """
     output = []
     with open(path) as f:
         line = f.readline()
@@ -45,6 +47,7 @@ def read_csv(path: str) -> list[tuple[str, tuple[float, float], float]]:
 
 
 def read_gpx(path: str) -> list[tuple[str, tuple[float, float], float]]:
+    """reads and parses the gpx file"""
     output = []
     with open(path) as f:
         m1 = re.findall(
@@ -58,17 +61,18 @@ def read_gpx(path: str) -> list[tuple[str, tuple[float, float], float]]:
 
 
 def write_csv(data: list[tuple[str, tuple[float, float], float]], path: str) -> None:
+    """writes the csv file"""
     with open(path, "w") as f:
         for line in data:
             f.write(line[0] + ";" + str(line[0][0]) + ";" + str(line[0][1]) + ";" + str(line[2]) + "\n")
 
 
 def write_png(data: list[tuple[str, tuple[float, float], float]], out: str, needsMarker: bool) -> None:
+    """writes the png file"""
     import matplotlib.pyplot as plt
     plt.figure(figsize=(10, 8))
     plt.scatter(x=[i[1][1] for i in data], y=[i[1][0] for i in data], color="blue", alpha=0.5)
     if needsMarker:
-        print(data[0][1])
         plt.annotate(text="Start", xy=(data[0][1][1], data[0][1][0]), fontsize=11, xytext=(-60, -25),
                      textcoords="offset pixels",
                      arrowprops=dict(arrowstyle="simple", color='green', connectionstyle="arc3,rad=0.3"))
@@ -80,6 +84,7 @@ def write_png(data: list[tuple[str, tuple[float, float], float]], out: str, need
 
 
 def main(args: argparse.Namespace) -> None:
+    """handels the main logic component for the program"""
     logger = logging.getLogger("skitrack")
     if len(args.infile) < 3:
         logger.error("Cannot recognise input file since the extension is wrong or to short")
@@ -109,17 +114,16 @@ def main(args: argparse.Namespace) -> None:
         logger.error(f"Wrong output extension: '{extension_in}', only csv and png are allowed")
         return
 
-    if not args.quiet:
-        print("Niedrigster Punkt:", numpy.min([i[2] for i in data]))
-        print("Höchster Punkt:", numpy.max([i[2] for i in data]))
-        print("Anzahl der Wegpunkte:", len(data))
-        if args.verbose:
-            print("Startpunkt:", data[0])
-            print("Endpunkt:", data[-1])
-            print("Output-Datei:", args.out)
+    logger.info("Niedrigster Punkt:" + str(numpy.min([i[2] for i in data])))
+    logger.info("Höchster Punkt:" + str(numpy.max([i[2] for i in data])))
+    logger.info("Anzahl der Wegpunkte:" + str(len(data)))
+    logger.debug("Startpunkt:" + str(data[0]))
+    logger.debug("Endpunkt:" + str(data[-1]))
+    logger.debug("Output-Datei:" + str(args.out))
 
 
 def setup_logger(args: argparse.Namespace) -> None:
+    """creates the logger to use later"""
     logger = logging.getLogger("skitrack")
     if args.verbose:
         logger.setLevel(logging.DEBUG)
