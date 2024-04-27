@@ -7,13 +7,14 @@ import logging
 import numpy
 import regex as re
 
+
 # Tests:
 # python skitrack.py --out ski_filtered.csv --tal 999 -s 1000 ski.gpx
 # python skitrack.py --verbose --marker --out ski1.png --tal 1500 ski.gpx
 # python skitrack.py --quiet --out ski2.png --tal 1500 ski.gpx
 #
 
-def get_args():
+def get_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("infile", help="Input-Datei (z.B. ski.gpx oder ski.csv)")
     parser.add_argument("-o", "--out", help="Zu generierende Datei, z.B. ski_new.csv oder ski.png", required=True)
@@ -56,13 +57,13 @@ def read_gpx(path: str) -> list[tuple[str, tuple[float, float], float]]:
     return output
 
 
-def write_csv(data, path):
+def write_csv(data: list[tuple[str, tuple[float, float], float]], path: str) -> None:
     with open(path, "w") as f:
         for line in data:
             f.write(line[0] + ";" + str(line[0][0]) + ";" + str(line[0][1]) + ";" + str(line[2]) + "\n")
 
 
-def write_png(data, out, needsMarker):
+def write_png(data: list[tuple[str, tuple[float, float], float]], out: str, needsMarker: bool) -> None:
     import matplotlib.pyplot as plt
     plt.figure(figsize=(10, 8))
     plt.scatter(x=[i[1][1] for i in data], y=[i[1][0] for i in data], color="blue", alpha=0.5)
@@ -118,7 +119,7 @@ def main(args: argparse.Namespace) -> None:
             print("Output-Datei:", args.out)
 
 
-def setup_logger(args):
+def setup_logger(args: argparse.Namespace) -> None:
     logger = logging.getLogger("skitrack")
     if args.verbose:
         logger.setLevel(logging.DEBUG)
