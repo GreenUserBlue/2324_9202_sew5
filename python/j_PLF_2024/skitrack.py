@@ -7,21 +7,26 @@ import logging
 import numpy
 import regex as re
 
+# Tests:
+# python skitrack.py --out ski_filtered.csv --tal 999 -s 1000 ski.gpx
+# python skitrack.py --verbose --marker --out ski1.png --tal 1500 ski.gpx
+# python skitrack.py --quiet --out ski2.png --tal 1500 ski.gpx
+#
 
 def get_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("infile", help="Input-Datei (z.B. ski.gpx oder ski.csv)")
-    parser.add_argument("--out", "-o", help="Zu generierende Datei, z.B. ski_new.csv oder ski.png", required=True)
-    parser.add_argument("--marker", "-m", help="Sollen der erste und letzte Punkt markiert werden?", required=False,
+    parser.add_argument("-o", "--out", help="Zu generierende Datei, z.B. ski_new.csv oder ski.png", required=True)
+    parser.add_argument("-m", "--marker", help="Sollen der erste und letzte Punkt markiert werden?", required=False,
                         action="store_true")
-    parser.add_argument("--tal", "-t", help="Seehöhe niedrigster Punkt, der noch ausgewertet werden soll",
+    parser.add_argument("-t", "--tal", help="Seehöhe niedrigster Punkt, der noch ausgewertet werden soll",
                         required=False)
-    parser.add_argument("--spitze", "-s", help="Seehöhe höchster Punkt, der noch ausgewertet werden soll",
+    parser.add_argument("-s", "--spitze", help="Seehöhe höchster Punkt, der noch ausgewertet werden soll",
                         required=False)
     group = parser.add_mutually_exclusive_group()
-    group.add_argument("--verbose", "-v", help="Zeit alle Details an (siehe Angabe)", required=False,
+    group.add_argument("-v", "--verbose", help="Zeit alle Details an (siehe Angabe)", required=False,
                        action="store_true")
-    group.add_argument("--quiet", "-q", help="Keine Textausgabe", required=False,
+    group.add_argument("-q", "--quiet", help="Keine Textausgabe", required=False,
                        action="store_true")
     return parser.parse_args()
 
@@ -66,7 +71,7 @@ def write_png(data, out, needsMarker):
         plt.annotate(text="Start", xy=(data[0][1][1], data[0][1][0]), fontsize=11, xytext=(-60, -25),
                      textcoords="offset pixels",
                      arrowprops=dict(arrowstyle="simple", color='green', connectionstyle="arc3,rad=0.3"))
-        plt.annotate(text="Ziel", xy=(data[-1][1][1], data[-1][1][0]), fontsize=11, xytext=(25, 10),
+        plt.annotate(text="Ende", xy=(data[-1][1][1], data[-1][1][0]), fontsize=11, xytext=(25, 10),
                      textcoords="offset pixels",
                      arrowprops=dict(arrowstyle="simple", color='green', connectionstyle="arc3,rad=0.3"))
     plt.savefig(out)
@@ -89,7 +94,7 @@ def main(args: argparse.Namespace) -> None:
 
     # filtering height
     data = [i for i in data if
-            (args.tal is None or data[2] >= args.tal) and (args.spitze is None or data[2] <= args.spitze)]
+            (args.tal is None or i[2] >= float(args.tal)) and (args.spitze is None or i[2] <= float(args.spitze))]
 
     if len(args.out) < 3:
         logger.error("Cannot recognise ouput file since the extension is wrong or to short")
