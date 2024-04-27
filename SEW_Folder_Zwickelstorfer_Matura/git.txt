@@ -1,4 +1,4 @@
 git config --global user.name "Felix Zwickelstorfer"
 git config --global user.email 9202@htl.rennweg.at
 
-(den rest macht intellij/pyCharm, wenn man beim starten des Projects git auswählt)
+(den rest macht intellij/pyCharm, wenn man beim starten des Projects git auswählt, falls man das vergisst, oben links entweder VCS oder Git, und danach LESEN)
