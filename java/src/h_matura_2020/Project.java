@@ -144,34 +144,21 @@ public class Project {
         List<String> xml = new ArrayList<>();
         xml.add("<kanbanBoard name=\"" + name + "\">");
         xml.add(indent.repeat(1) + "<total>");
-        xml.add(indent.repeat(2) + "<ready percent=\"" + (int)(sumProgressReadyHours()/sumProgressLengthHours()*100) + "\"/>");
+        xml.add(indent.repeat(2) + "<ready percent=\"" + (int) (sumProgressReadyHours() / sumProgressLengthHours() * 100) + "\"/>");
         xml.add(indent.repeat(2) + "<length hours=\"" + sumProgressLengthHours() + "\"/>");
         xml.add(indent.repeat(1) + "</total>");
         xml.add(indent.repeat(1) + "");
         for (Map.Entry<String, TreeSet<Story>> e : states.entrySet()) {
             xml.add(indent.repeat(1) + "<state name=\"" + e.getKey() + "\">");
             xml.add(indent.repeat(2) + "<total>");
-            xml.add(indent.repeat(3) + "<ready percent=\"" +(int)(sumProgressReadyHours(e.getKey())/sumProgressLengthHours(e.getKey())*100) + "\"/>");
+            xml.add(indent.repeat(3) + "<ready percent=\"" + (int) (sumProgressReadyHours(e.getKey()) / sumProgressLengthHours(e.getKey()) * 100) + "\"/>");
             xml.add(indent.repeat(3) + "<length hours=\"" + sumProgressLengthHours(e.getKey()) + "\"/>");
             xml.add(indent.repeat(2) + "</total>");
             xml.add(indent.repeat(2) + "");
-            for (Story s : e.getValue()) {
-                xml.add(indent.repeat(2) + "<story name=\"" + s.getStoryName() + "\">");
-                xml.add(indent.repeat(3) + "<state name=\"" + s.getStateName() + "\"/>");
-                xml.add(indent.repeat(3) + "<progress>");
-                xml.add(indent.repeat(4) + "<ready percent=\"" + (int) s.getProgressReadyPercent() + "\"/>");
-                xml.add(indent.repeat(4) + "<length hours=\"" + s.getProgressLengthHours() + "\"/>");
-                xml.add(indent.repeat(3) + "</progress>");
-                xml.add(indent.repeat(3) + "<description>");
-                xml.add(indent.repeat(4) + s.getDescription());
-                xml.add(indent.repeat(3) + "</description>");
-                xml.add(indent.repeat(2) + "</story>");
-
-            }
+            e.getValue().forEach(it -> xml.addAll(it.toXML().stream().map(a -> indent.repeat(2) + a).collect(Collectors.toList())));
             xml.add(indent.repeat(1) + "</state>");
         }
-            xml.add(indent.repeat(0) + "</kanbanBoard>");
-//            xml.add(indent.repeat(4) + "");
+        xml.add("</kanbanBoard>");
         return xml;
     }
 
