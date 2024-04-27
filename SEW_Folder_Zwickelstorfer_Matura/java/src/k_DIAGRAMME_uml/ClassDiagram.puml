@@ -1,0 +1,58 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+abstract class Component
+abstract class SimpleInput extends Component
+abstract class Gate extends Component
+abstract class Output extends Component
+class Taster extends SimpleInput
+class FlipFlop extends Gate
+class LED extends Output
+class Cable
+
+class Cable{
+boolean isHigh
+setHigh()
+isHigh()
+}
+
+class FlipFlop{
+updateOut()
+}
+
+class LED{
+boolean isShining
+isShining()
+updateOut()
+}
+
+abstract class Component{
+abstract saveIn()
+abstract updateOut()
+}
+
+abstract class SimpleInput{
+List<Cable> cablesOut
+boolean isPressed
+press()
+release()
+}
+
+class Taster {
+updateOut()
+}
+
+abstract class Gate{
+List<Cable> cablesIn
+List<Cable> cablesInSave
+List<Cable> cablesOut
+saveIn()
+}
+
+abstract class Output{
+List<Cable> cablesIn
+List<Cable> cablesInSave
+saveIn()
+}
+
+@enduml

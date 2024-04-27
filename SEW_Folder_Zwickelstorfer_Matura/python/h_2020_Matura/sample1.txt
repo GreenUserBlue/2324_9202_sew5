@@ -1,0 +1,9 @@
+Planung
+    OSP
+    PSP
+    Planung abgeschlossen
+Durchführung
+    Programmieren
+    Testen
+    Abnahme
+    Alles Fertig

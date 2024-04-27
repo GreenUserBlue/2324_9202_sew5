@@ -1,0 +1,21 @@
+@startuml
+'https://plantuml.com/use-case-diagram
+entity Controller
+entity CableR
+entity CableS
+entity CableQ
+entity FlipFlop
+entity LED
+entity TasterR
+entity TasterS
+
+scale 250 width
+Controller->CableR:Cable()
+Controller->CableS:Cable()
+Controller->CableQ:Cable()
+Controller->FlipFlop:FlipFlop(CableQ,CableR,CableS)
+Controller->LED: LED(CableQ)
+
+Controller->TasterR:Taster(CableR)
+Controller->TasterS:Taster(CableS)
+@enduml

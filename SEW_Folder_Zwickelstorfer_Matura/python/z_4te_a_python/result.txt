@@ -1,0 +1,322 @@
+Trying:
+    from Fraction import Fraction
+Expecting nothing
+ok
+Trying:
+    Fraction()
+Expecting:
+    Fraction(0, 1)
+ok
+Trying:
+    Fraction(1)
+Expecting:
+    Fraction(1, 1)
+ok
+Trying:
+    Fraction(1,2)
+Expecting:
+    Fraction(1, 2)
+ok
+Trying:
+    Fraction(0, 0)     # doctest: +ELLIPSIS +IGNORE_EXCEPTION_DETAIL
+Expecting:
+    Traceback (most recent call last):
+    ...
+    ArithmeticError...
+ok
+Trying:
+    Fraction(2,4)
+Expecting:
+    Fraction(1, 2)
+ok
+Trying:
+    Fraction(-1, 2)
+Expecting:
+    Fraction(-1, 2)
+ok
+Trying:
+    Fraction(-1, -2)
+Expecting:
+    Fraction(1, 2)
+ok
+Trying:
+    Fraction(1, -2)
+Expecting:
+    Fraction(-1, 2)
+ok
+Trying:
+    str(Fraction(1))
+Expecting:
+    '1'
+ok
+Trying:
+    str(Fraction(1,2))
+Expecting:
+    '1/2'
+ok
+Trying:
+    str(Fraction(-1, 2))
+Expecting:
+    '-1/2'
+ok
+Trying:
+    Fraction(1,2)+Fraction(1,2)
+Expecting:
+    Fraction(1, 1)
+ok
+Trying:
+    Fraction(1,2)+Fraction(1,3)
+Expecting:
+    Fraction(5, 6)
+ok
+Trying:
+    Fraction(1,2)-Fraction(1,3)
+Expecting:
+    Fraction(1, 6)
+ok
+Trying:
+    Fraction(1,2)*Fraction(1,3)
+Expecting:
+    Fraction(1, 6)
+ok
+Trying:
+    Fraction(1,2)/Fraction(1,3)
+Expecting:
+    Fraction(3, 2)
+ok
+Trying:
+    a = Fraction(2,3); b = Fraction(3,4); c = a + b; a, b, c
+Expecting:
+    (Fraction(2, 3), Fraction(3, 4), Fraction(17, 12))
+ok
+Trying:
+    Fraction(1,2) + 1
+Expecting:
+    Fraction(3, 2)
+ok
+Trying:
+    Fraction(1,2) - 1
+Expecting:
+    Fraction(-1, 2)
+ok
+Trying:
+    Fraction(1,3) * 2
+Expecting:
+    Fraction(2, 3)
+ok
+Trying:
+    f1 = Fraction(13, -4)
+Expecting nothing
+ok
+Trying:
+    f2 = Fraction(7, 3)
+Expecting nothing
+ok
+Trying:
+    f1 + f2
+Expecting:
+    Fraction(-11, 12)
+ok
+Trying:
+    f1 - f2
+Expecting:
+    Fraction(-67, 12)
+ok
+Trying:
+    f1 * f2
+Expecting:
+    Fraction(-91, 12)
+ok
+Trying:
+    f1 / f2
+Expecting:
+    Fraction(-39, 28)
+ok
+Trying:
+    f1 = Fraction(7, -9)
+Expecting nothing
+ok
+Trying:
+    f2 = Fraction(12, 5)
+Expecting nothing
+ok
+Trying:
+    f1 + f2
+Expecting:
+    Fraction(73, 45)
+ok
+Trying:
+    f1 - f2
+Expecting:
+    Fraction(-143, 45)
+ok
+Trying:
+    f1 * f2
+Expecting:
+    Fraction(-28, 15)
+ok
+Trying:
+    f1 / f2
+Expecting:
+    Fraction(-35, 108)
+ok
+Trying:
+    f1 = Fraction(7, -9)
+Expecting nothing
+ok
+Trying:
+    f2 = 5
+Expecting nothing
+ok
+Trying:
+    f1 + f2
+Expecting:
+    Fraction(38, 9)
+ok
+Trying:
+    f2 + f1
+Expecting:
+    Fraction(38, 9)
+ok
+Trying:
+    f1 - f2
+Expecting:
+    Fraction(-52, 9)
+ok
+Trying:
+    f2 - f1
+Expecting:
+    Fraction(52, 9)
+ok
+Trying:
+    f1 * f2
+Expecting:
+    Fraction(-35, 9)
+ok
+Trying:
+    f2 * f1
+Expecting:
+    Fraction(-35, 9)
+ok
+Trying:
+    f1 / f2
+Expecting:
+    Fraction(-7, 45)
+ok
+Trying:
+    f2 / f1
+Expecting:
+    Fraction(-45, 7)
+ok
+Trying:
+    1 + Fraction(1,2)
+Expecting:
+    Fraction(3, 2)
+ok
+Trying:
+    1 - Fraction(1,2)
+Expecting:
+    Fraction(1, 2)
+ok
+Trying:
+    2 * Fraction(1,2)
+Expecting:
+    Fraction(1, 1)
+ok
+Trying:
+    float(Fraction(1,2))
+Expecting:
+    0.5
+ok
+Trying:
+    Fraction(1,2).denominator
+Expecting:
+    2
+ok
+Trying:
+    Fraction(1,2).numerator
+Expecting:
+    1
+ok
+Trying:
+    a = Fraction(4,5); a.numerator = 6 # doctest: +ELLIPSIS +IGNORE_EXCEPTION_DETAIL
+Expecting:
+    Traceback (most recent call last):
+    ...
+    AttributeError: can't set attribute
+ok
+Trying:
+    print(Fraction(5))
+Expecting:
+    5
+ok
+Trying:
+    print(Fraction(5, 3))
+Expecting:
+    1 2/3
+ok
+Trying:
+    print(Fraction(-5, 3))
+Expecting:
+    -1 2/3
+ok
+Trying:
+    print(3 + Fraction(1, 7))
+Expecting:
+    3 1/7
+ok
+Trying:
+    print(3 + 1 / (7 + Fraction(1, 15)))
+Expecting:
+    3 15/106
+ok
+Trying:
+    print(3 + 1 / (7 + 1 / (15 + Fraction(1))))
+Expecting:
+    3 16/113
+ok
+Trying:
+    print(3 + 1 / (7 + 1 / (15 + 1 / (1 + Fraction(1, 292) ))))
+Expecting:
+    3 4687/33102
+ok
+Trying:
+    Fraction(1,2) < Fraction(2,3)
+Expecting:
+    True
+ok
+Trying:
+    Fraction(1,2) > Fraction(2,3)
+Expecting:
+    False
+ok
+Trying:
+    Fraction(1,2) >= Fraction(1,2)
+Expecting:
+    True
+ok
+Trying:
+    Fraction(1,2) == Fraction(1,2)
+Expecting:
+    True
+ok
+Trying:
+    Fraction(1,2) != Fraction(2,3)
+Expecting:
+    True
+ok
+Trying:
+    Fraction(3,2) > 1
+Expecting:
+    True
+ok
+Trying:
+    Fraction(1_000_000_000_000_000_001, 1_000_000_000_000_000_000) > 1
+Expecting:
+    True
+ok
+1 items passed all tests:
+  64 tests in Fraction.test
+64 tests in 1 items.
+64 passed and 0 failed.
+Test passed.

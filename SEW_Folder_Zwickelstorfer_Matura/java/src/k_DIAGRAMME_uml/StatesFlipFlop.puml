@@ -1,0 +1,12 @@
+@startuml
+'https://plantuml.com/state-diagram
+
+scale 250 width
+
+[*] --> NotHigh
+NotHigh --> NotHigh: Input r High or Nothing
+NotHigh --> High: Input s High (and not input r)
+High --> NotHigh: Input r
+High --> High: Input s High (and not input r) or Nothing
+
+@enduml

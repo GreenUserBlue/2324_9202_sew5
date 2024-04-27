@@ -1,0 +1,24 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+Controller->FlipFlop:saveIn()
+FlipFlop->CableR:isHigh()
+CableR-->FlipFlop:true/false
+FlipFlop->CableS:isHigh()
+CableS-->FlipFlop
+Controller->LED:saveIn()
+LED->CableQ:isHigh()
+CableQ-->LED
+
+Controller->TasterR:updateOut()
+TasterR->CableR:setHigh(true/false)
+Controller->TasterS:updateOut()
+TasterS->CableS:setHigh()
+
+Controller->FlipFlop: updateOut()
+FlipFlop->CableQ:setHigh()
+Controller->LED:updateOut()
+
+
+
+@enduml
