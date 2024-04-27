@@ -176,7 +176,7 @@ public class PngSteganographie4pupil {
     public static void setByteArray(BufferedImage img, byte info[]) {
         //32 bit => 4 pro byte saven => 8 byte benötigt
         for (int i = 0; i < 4; i++) {
-            setByte(img, i * 2, (byte) ((info.length >> (i * 8)) & 0xff));
+            setByte(img, i * 2, (byte) ((info.length >> (24-i * 8)) & 0xff));
         }
 
         for (int i = 0; i < info.length; i++) {
@@ -199,7 +199,7 @@ public class PngSteganographie4pupil {
         int len = 0;
         //32 bit => 4 pro byte saven => 8 byte benötigt
         for (int i = 0; i < 4; i++) {
-            len |= (getByte(img, i * 2) << (i * 8));
+            len |= (getByte(img, i * 2) << (24-i * 8));
         }
         byte[] bytes = new byte[len];
         for (int i = 0; i < len; i++) {
