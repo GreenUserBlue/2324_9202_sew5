@@ -1,5 +1,10 @@
 package y_Bit;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -15,9 +20,12 @@ public class Main {
 //        System.out.println();
 //        System.out.println();
 //        otherOperations(6, 187420);
-        replaceAt(0x12345678, 0, 3);
-        System.out.println(getAt(0x12345678, 3));
-        System.out.println(getAt(0x12345678, 2));
+//        replaceAt(0x12345678, 0, 3);
+//        System.out.println(getAt(0x12345678, 3));
+//        System.out.println(getAt(0x12345678, 2));
+
+        List<String> a = List.of("abc", "bcd", "acd", "abg", "acfg");
+        System.out.println(a.stream().collect(Collectors.groupingBy(b -> b.substring(0, 2),Collectors.mapping(c->c.substring(2),Collectors.toList()))));
     }
 
     private static int getAt(int n, int position) {

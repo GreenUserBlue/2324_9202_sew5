@@ -6,19 +6,6 @@ import matplotlib.axis
 import matplotlib.pyplot as plt
 import logging
 
-# EXTRA FOR DOCTESTING
-def myMethod():
-    """does stuff
-    >>> myMethod() # doctest: +IGNORE_EXCEPTION_DETAIL
-    Traceback (most recent call last):
-    OverflowError: you are stupid
-    >>>
-    >>> myMethod() # doctest:+ELLIPSIS
-    Traceback (most recent call last):
-    ...
-    OverflowError: you are stupid
-    """
-    raise OverflowError("you are stupid")
 
 # matplotlib.use("QtAgg") 'TKAgg','GTKAgg','Qt4Agg','WXAgg', alle Möglichkeiten
 
@@ -73,9 +60,34 @@ def check_smallest_size(points: list[tuple[float, float]], min_length: float) ->
     for p in range(len(points)):
         x = points[(p + 1) % len(points)][0] - points[p][0]
         y = points[(p + 1) % len(points)][1] - points[p][1]
-        if x * x + y * y < min_length_squared:
+        pixel_x, pixel_y = data_to_pixel_coords_within_plot((x, y))
+        if pixel_x * pixel_x + pixel_y * pixel_y < min_length_squared:
             return False
     return True
+
+
+def data_to_pixel_coords_within_plot(point):
+    # print(fig.transFigure.transform_point((0, 0))) just generally maybe useful
+    # print(fig.transFigure.transform_point((1, 1)))
+    fig, ax = plt.gcf(), plt.gca()
+    bbox = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+    width, height = bbox.width, bbox.height
+    width *= fig.dpi
+    height *= fig.dpi
+    y_coords = ax.get_ylim()
+    x_coords = ax.get_xlim()
+    return (point[0] - x_coords[0]) * width / x_coords[1], (point[1] - y_coords[0]) * height / y_coords[1]
+
+
+def pixel_to_data_coords_within_plot(point):
+    fig, ax = plt.gcf(), plt.gca()
+    bbox = ax.get_window_extent().transformed(fig.dpi_scale_trans.inverted())
+    width, height = bbox.width, bbox.height
+    width *= fig.dpi
+    height *= fig.dpi
+    y_coords = ax.get_ylim()
+    x_coords = ax.get_xlim()
+    return (point[0]) / width * x_coords[1] + x_coords[0], (point[1]) / height * y_coords[1] + y_coords[0]
 
 
 def mid_points(points: list[tuple[float, float]]) -> list[tuple[float, float]]:
